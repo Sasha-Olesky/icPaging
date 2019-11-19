@@ -1,0 +1,193 @@
+0206
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+Vers  Date     Who  What
+00.00 05.08.05 PK - initial revision
+01.00 29.08.05 PK - initial release with optimizations and bugs fixed
+01.01 05.12.05 PK - USB non-blocking, if no device found, init returns after a timeout
+01.02 31.01.06 PK - fixed initialization bug - no device was found if init called after more than 64 secs from startup
+01.03 21.02.06 KK - directory and long filenames support
+      02.03.06 PK - LRU algorithm rewritten
+                  - cache size increased to 8kB (16 entries)
+		  - fixed bug in find_free_cluster
+01.04 03.05.06 PK - implemented the unlink function
+01.05 27.07.06 PK - more tolerant initialization, accepts devices that support only default 
+                    configuration for interface and return STALL on set_interface request
+01.06 31.07.06 PK - statfs call returns the filesystem type
+      02.08.06 PK - USB_GET_DEVICE_INFO call 
+      29.08.06 PK - more nice() calls
+      30.08.06 PK - background-write process
+                  - more stupid-proof interface, if fs_init fails, all functions return error
+01.07 04.09.06 PK - fixed write bug where device size wasn't checked
+                  - added device capacity information into statfs call
+		  - performance improvement, nice called only every 3ms
+01.08 07.09.06 PK - optimized and faster code, less memory requirements
+      08.09.06 PK - buffer cache optimization, optimized disk write, significant write speed-up
+01.09 10.10.06 PK - encrypted filesystem support
+01.10 12.12.06 PK - added functions to encrypt and decrypt key for CFS
+01.11 10.04.07 PK - seek 0, write error fixed (was writing into the second cluster)
+01.12 17.04.07 PK - device capacity doesn't overflow
+                  - FAT32 detection added (not supported yet but for diagnosis)
+01.13 18.07.07 PK - REQUEST SENSE command sent in the initialization part, 
+                    which enables certain USB sticks like the Kingston DataTraveller
+		  - added extra 120us delay between command and data part of the MSTG transaction if CBW fails,
+		    certain USB non-compliant devices require that
+01.14 27.08.07 PK - on BUS_RESET signal the device resets only if it has been previously attached -> more safe to EMI
+01.14 12.06.08 KK - if rename target exists, it's automatically deleted. If it's open,
+                    it's not deleted and an error is returned.
+01.15 21.07.08 KK/PK - fixed bug #018.06: fat_find_file does not load the next cluster in write or create mode
+01.15 13.08.08 KK - fixed bad RENAME which sometimes cut off ends of filenames
+01.15 14.08.08 KK - fixed bad DELETE, bad counting of directory entries resulted in one entry earlier to be
+                    deleted (assuming short filenames).
+01.16 14.08.08 PK - USB bus reset time increased from 15ms to 50ms for better compliancy with the USB spec
+                  - mstg reset recovery after startup to prevent stalled endpoints if bulk transfer is interrupted by reset
+01.16 15.08.08 KK - fixed run away from the end of the root directory.
+               PK - more error proof USB STALL checking
+01.16 18.08.08 KK - Fixed uninitialized entries in a cluster appended to a
+                    directory.
+01.16 20.08.08 KK - Fixed bad handling of root directory
+01.16 21.08.08 KK - Made open reject a filename with a space inside.
+01.17 21.01.08 PK - removed "Waiting for USB" message
+      27.05.09 PK - fixed bug in cache: flush_entry corrupts the number of dirty entries
+<===================================================>
+02.00 16.06.09 PK - FAT32
+                  - supports large disks, FAT32, supper-floppy, mkdir, long filenames (read and write)
+		  - supports multiple partitions (picks up the 1st FAT partition)
+      29.06.09 PK - bugfix: read error in mstg_read_block_cached was causing leak of cache entries
+                  - mstg_read and mstg_write optimisation: avoid whole block copying if only small chunk of data
+                    is transferred - this should speed up FAT access
+		  - workaround for assumed USB Controller bug (#063.07)
+02.01 08.07.09 PK - proper bug workaround for the controller bug (#063.07) based on the information from Lantronix
+                  - removed extra reset recovery at startup, which was making some device to not work
+      09.07.09 PK - simplified token done processing
+                  - buffer cache optimisation: data reorganised to allow write of several consecutive blocks
+                  - usbmstg API simplified: removed mstg_write_block, now mstg_write_blocks takes over the functionality
+      11.07.09 PK - reverted changes in buffer cache, which were corrupting the data on write
+      14.07.09 PK - USB error handling changed: DMA error bails out immediately without a retry - this makes Sony M2 USB stick to work
+02.02 19.10.09 PK - more strict checking on the Mass Storage detection: InterfaceProtocol and InterfaceSubClass 
+                    Warning: this might cause some devices to stop working, but it is ok, they would not work properly anyway.
+      20.10.09 PK - mstg_init issues INQUIRY and detects the command set
+                  - mstg init issues MODE_SENSE to detect write protected disks
+		  - implemented REQUEST_SENSE to detect errors 
+		  - removed unused START_STOP_UNIT command
+		  - write or append on read-only disk fails with -EROFS
+      22.10.09 PK - block read/write retry in cache in case of an I/O error
+      27.10.09 PK - USB: usb_clear_stall() performs GetStatus() before ClearFeature() and clears STALL only if endpoint really halted
+                    this is a workaround for some buggy USB devices
+		  - USB error handling rewritten (bug #063.09), this was causing problems with some USB sticks
+		    most errors are now retried in usb_send_token()
+		  - implemented TEST_UNIT_READY in mstg_init, this enables Toshiba drives (bugfix #063.05)
+		  - REQUEST_SENSE at startup only if unit not ready
+		  - reduced number of retries of READ_CAPACITY from 10 to 3
+      28.10.09 PK - I/O read errors handled in read_mbr(), fat_get_data_from_cluster_chain(), read(), open(), 
+                    read_boot_sec(), fat_find_free_cluster(), fat_find_file(), fat_next_dirent()
+		  - changed error signalisation in fat_find_file_path(), now returns the errno
+		  - changed error signalisation in fat_find_file(), now returns the errno
+		  - changed error signalisation in fat_next_dirent(), now also returns the errno
+		  - I/O write errors handled in fat_find_file(), write_cluster()
+		  - fat_blkwrpart returns the error status
+      29.10.09 PK - I/O error detection and error handling in fat_set_file_name(), fat_set_file_size(), 
+                    fat_set_file_start_cluster() and fat_set_file_attr()
+		  - error handling in callers of these functions
+		  - these functions now return an error status
+		  - I/O error detection in close_fd(), it now returns an error status
+		  - added error handling if close fails in find_slash
+		  - changed interface to fat_set_cluster: now detects errors and returns the error status
+		  - fat_delete_cluster_chain now returns the error status
+		  - implemented filesystem_corrupted() function which unmounts the filesystem if the FAT gets corrupted
+		  - fixed bug in find_last_clust - was wrongly returning only 16-bit value (bug #063.16)
+		  - changed interface to fat_fetch, now returns the error status
+		  - fat_fetch error handling in fat_find_file, fat_get_data_from_cluster_chain and fat_write_to_cluster_chain
+		  - fixed handle leak in open_into_fdesc when an error occured (bug #063.17)
+		  - added error status into fat_seek, implemented proper error handling in the caller functions
+		  - interface to find_last_clust changed and error handling added
+		  - implemented error handling in advance_dirent
+		  - workaround for buggy devices: if the device crashes during reboot and stays in configured state
+		    attempt reset recovery before mstg_init - this seems to help the new Barix stick
+      02.11.09 PK - removed artificial 100ms delay between setup and data phase in control transfers
+                  - implemented short data count in control transfers
+		  - get descriptor in two stages: first get the max packet size on ctl endpoint, then bus reset and continue
+      03.11.09 PK - SetInterface() done only if there are more than 1 interfaces; this was causing problems on PNY Atache 1GB
+                    Windows don't use SetInterface() either
+		  - RESUME signalling after reset - before USB started sending SOF immediately after startup, which was wrong
+		  - bugfix in usb_clear_stall: if halt fails, do not reset the flip/flop
+      05.11.09 PK - removed extra 100ms delay at the end of usb_get_block_device()
+                  - removed extra 10ms delay at the end of usb_std_control_transfer
+		  - retry in reset recovery and clear_stall on STALL
+		  - removed extra 100ms delay before clear_stall
+		  - NAKs retried in SW; NAK retrying in HW is not reliable on DSTni and cannot be interrupted if the device NAKs infinitely
+		  - added extra 10ms recovery time after resume in usb_hw_init
+		  - added workaround for PNY Attache: if busy on BULK, does not answer at all (should NAK)
+		  - extra safety register setting in usb_send_token - we don't trust the controller
+		  - removed BDT address recalculation after token done 
+		  - workaround for Kingston Tech. 0x1a00 products: no NAKs on BULK if busy
+		  - 5s settle-down time after bus enumeration, some USB devices need it
+		  - usbmstg: read/write/sync retries reduced from 10 to 3
+		  - usbmstg: common function for command status; error handling implemented properly
+		  - bugfix #063.12: non-STALL error in data phase of MSTG transaction is handled by USB device reset
+		    this avoids writing CBW on the medium
+		  - usb_send_token: number of retries increased to 3
+		  - max NAK retry time 10s
+      06.11.09 PK - implemented MODE_SENSE(10) on non Transparent SCSI devices (e.g. Pretec 256MB)
+                  - otherwise uses MODE_SENSE(6)
+		  - if MODE_SENSE(10) fails, try MODE_SENSE(6)
+		  - also accepts devices with InterfaceSubClass==2 (ATAPI); this enables PRETEC stick
+		  - NAK timeout: 500ms for setup transfers, 5s for bulk transfers
+		  - 5s settle down time moved before get max lun
+      09.11.09 PK - critical debugging message reformatted
+                  - workaround for Barix USB stick: wrong sense if device is write protected
+      10.11.09 PK - end-of-media error in read/write is handled by unmounting the FS
+                  - medium or hardware errors are handled by unmounting the FS
+		  - cache: do not retry reads; already retried in mstg_read_block
+		  - cache: retries on write moved to mstg_write_block
+		  - usb_send_token now returns the error status in errno and returns the length also on error
+		  - error handling for Illegal Request: LBA out of range
+		  - workaround for the Barix USB stick: CSW sent in data phase if LBA out of range in READ
+      12.11.09 PK - removed 5ms delay in NAK retry workaround for PNY disks
+      13.11.09 PK - error handling in cfs_read, cfs_read_cluster and cfs_get_data_from_cluster_chain
+                  - bugfix: inconsistent fpos and cur_clust if fat_fetch fails in fat_get_data_from_cluster_chain
+		  - partition table reading rewritten: saves memory and recognises only DOS and WIN paritions
+      16.11.09 PK - MODE SENSE uses 64B allocation length
+                  - fixed bug in clear stall: wrong endpoint number sent (missing 0x80 for IN endpoints)
+		  - scsi_transaction_simple changed: returns the number of bytes transferred, data residue is not considered an error
+		    size checking happens then on upper level
+		  - this solves wrongly interpreted residue bug in MODE_SENSE on Toshiba
+		  - ignore CSW data residue if the device sends more than the transfer length (should not happen)
+      17.11.09 PK - workaround for Lexar JumpDrive, which reports "illegal request invalid field in CDB"
+                    instead of "invalid LUN" - workaround it
+		  - removed GetEndpointStatus from usb_clear_status, this does not work on some devices (e.g. Lexar JumpDrive)
+		    and Linux does not use it either
+		  - device workarounds moved after receiving the complete device descriptor (did not work on Lexar JumpDrive before)
+      18.11.09 PK - if device does not respond to reset recovery assume a crash and unmount the device
+                  - bugfix in scsi_mode_sense: interpret sense only if request sense succeeds
+		  - changed return value of scsi_transaction_send_chunked: now returns also the errno
+		  - caching algorithm changed to pick the lower priority entry if both entries have the same age (bugfix #063.19)
+      19.11.09 PK - cache: fixed wrong dirty_entries count calculation
+      20.11.09 PK - added another caching algorithm, which ages entries in uniform time intervals, not used at the moment
+                  - cache: find_free_entry always returns an entry
+      24.11.09 PK - sync process flushes the cache first after 10s of writing inactivity
+      25.11.09 PK - max 255 character filename length check in fat_find_file
+                  - cache priority of regular data reduced from 128 to 32, this makes long writes to use the whole cache quicker
+		  - code refactorisation in rename
+		  - bugfix #063.15: rename fails if the new name does not exist
+      26.11.09 PK - added a message for devices with LBS!=512
+                  - busy check in unlink - fails if the file is already open
+<======= 26.11.09 PK version 02.02 frozen ============================================>
+A203  03.12.09 PK - bugfix #063.22: FAT16 root directory limit not checked
+                  - improved SCSI get CSW according to the spec: if CSW fails 2x, perform reset recovery only if IN endpt is stalled
+      04.12.09 PK - extra check in mstg_read/write_block(s) if LBA is within the valid range
+                  - workaround for the Barix stick: wrong sense "media not ready" (02 3a 00) 
+		    if WP is enabled on the fly (should be 07 2a 00 - "write protect")
+		  - fixed bug in scsi_write_blocks: if an error happened cleared STALL and continued writing data instead receiving CSW
+      07.12.09 PK - removed WORKAROUND_WP_SENSE_NOT_PRESENT
+      09.12.09 PK - fixed bug in command retry in mstg_write_blocks; data phase of the WRITE command was skipped
+                  - added extra 100ms to the beginning of reset recovery (before the MSTG reset is issued)
+		  - USB send token: retry count reset if a NAK occurs
+		  - USB send token: extra 1ms delay in case of a CRC or SOF error - to allow bus turnaround timeout on the device and 
+		    this way signalise the error to the device
+<======= 14.12.09 PK version 02.03 frozen ============================================>
+A204  05.01.10 PK - feature #63.24: support FAT format on "Linux" partition type
+A205  13.01.10 PK - bugfix #63.25: Access beyond end of media if file ends at cluster boundary
+0205  03.08.10 PK - version changed from A205 to 0205
+      26.08.10 PK - fixed broken encrypted filesystem - read not working, crashing
+0206  22.03.11 PK - #063.27: increased the number of TEST_UNIT_READY requests from 10 to 16 to support non-standard devices like DeLOCK Nano USB stick
+*/

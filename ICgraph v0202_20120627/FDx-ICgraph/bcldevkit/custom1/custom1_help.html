@@ -1,0 +1,51 @@
+<html>
+<body bgcolor=#CCCCCC>
+<font size=2 face="Arial, Helvetica, sans-serif">
+<span lang="en-us">
+<b>Help</b><br><br>
+To store changed settings click on "Apply" at the bottom of the page.<br>
+The device will restart with the new setting.<br><br>
+<b>Input source</b><br>
+Choose the desired input source.<br>
+On Detect Source the device chooses, during start up, the input with the highest audio level.<br>
+Default setting is <em>"Mic"</em>.<br><br>
+<b>Encoding</b><br>
+Choose between different encoding types and sampling frequencies
+(<em>"uLaw"</em>, <em>"aLaw"</em>, <em>"PCM MSB"</em> or <em>"PCM LSB"</em> at 8 or 24 kHz).<br>
+Default setting is <em>"uLaw 24 kHz"</em>.<br><br>
+<b>Volume</b><br>
+Choose between <em>"0"</em>% and <em>"100"</em>% in 5% steps.<br>
+Default: <em>"50"</em>%<br><br>
+<b>Streaming mode</b><br>
+<em>"send always"</em> will stream always<br>
+<em>"send on level"</em> will stream if the input audio level goes above the configured <em>"Input Trigger Level"</em><br>
+<em>"send on I0 "</em> will stream if the input I0 button is pressed<br>
+<em>"respond"</em> will stream back as long as a stream is being received<br>
+Default setting is <em>"send always"</em>.<br>
+<b>NB! </b> The I1 button can be used as RING request to remote side (to UDP port 3040).
+Your unit (to UDP port 12301) will also accept the commands FORCE ON (c=91),
+FORCE OFF (c=84), DOOR ON (c=78), DOOR OFF (c=79), pulse OPEN DOOR for 3 sec (c=80), RTS ON (c=60) and RTS OFF (c=61) from current connected remote side.<br><br>
+<b>Input Trigger Level</b><br>
+Triggering input audio level if <em>"send on level"</em> mode is selected. Accepted range: 0-32767<br>
+Default: <em>"1000"</em><br><br>
+<b>Inactivity Timeout</b><br>
+<em>"Send on level"</em> streaming stops after this number of milliseconds of no input audio signal.<br>
+Default: <em>"1000ms"</em><br><br>
+<b>Connection protocol</b><br>
+<em>"Raw UDP"</em> will stream by using raw UDP protocol<br>
+<em>"RTP"</em> will stream by using RTP protocol<br>
+Default setting is <em>"Raw UDP"</em>.<br><br>
+<b>Destination IP</b><br>
+Enter 4 values of the IP address of the receiving unit.<br>
+If no Destination Port is used then this IP address is for addressing the ring command to ICgraph only.<br><br>
+<b>Destination Port</b><br>
+Enter the port number of the receiving unit.<br>
+<b>NB! </b> If 0, your unit will send "to origin source" by using Encoding (Payload Type for RTP), Protocol, and IP:Port of the latest received packet<br><br>
+<b>Receive Port</b><br>
+Enter the port number for receiving a stream.<br>
+<!--Set to a value between 0 (disabled) and 65535.<br> -->
+Default port  is <em>"3030"</em>.<br><br>
+<b>Own Name</b><br>
+This Name is necessary only with using dynamic IP in order to recognize this unit by broadcast DISCOVER request.<br><br>
+
+</body></html>

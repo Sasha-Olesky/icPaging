@@ -1,0 +1,44 @@
+<html><!--&L(0,"*",21);-->
+<body bgcolor=#8F2635 link=#8F2635 vlink=#8F2635 alink=#8F2635 leftmargin=6 topmargin=4>
+<font face="Arial, Helvetica, sans-serif">
+<table cellspacing=0 cellpadding=0>
+	<tr>
+		<td align=left valign=top>
+			<img src=barix.gif border=0 usemap=#navB>
+			<map name=navB><area shape=RECT coords=0,0,152,56 href=http://www.barix.com target=_blank alt="VISIT THE BARIX WEBSITE"></map><br>
+		</td>
+		<td>&nbsp; &nbsp;</td>
+		<td valign="top"><font size=1 color=#FFFFFF>MAC<br>
+			<br>
+			Firmware<br>
+			Web application<br>
+			Bootloader<br></font>
+		</td>
+		<td>&nbsp;</td>
+		<td valign="top"><font size=1 color=#FFFFFF>&LState(1,"%s",12);<br>
+			<br>
+			V&LSetup(5,"%02x");.&LSetup(6,"%02x"); (&LSetup(11,"%02x");/&LSetup(12,"%02x");/20&LSetup(10,"%02x");)<br>
+			V&LSetup(9,"%02x","ABCLAPPVERSION",1);.&LSetup(9,"%02x","ABCLAPPVERSION",0);<br>
+			V&LSetup(7,"%02x");.&LSetup(8,"%02x");<br></font>
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+		<td valign="top"><font size=1 color=#FFFFFF>
+			Setup<br>
+			Song<br>
+			File system<br>
+			Application<br>
+			Application version<br></font>
+		</td>
+		<td>&nbsp;</td>
+		<td valign="top"><font size=1 color=#FFFFFF>
+			V&LSetup(1,"%02x",116);.&LSetup(1,"%02x",117);<br>
+			V&LSetup(13,"%02x");.&LSetup(14,"%02x"); (&LSetup(18,"%s");)<br>
+			V&LSetup(15,"%02x");.&LSetup(16,"%02x");<br>
+			&LSetup(4,"%s",180);<br>
+			&LBAS(1,"%fs",VER$);<br></font>
+		</td>
+
+	</tr>
+</table>
+</body>
+</html>

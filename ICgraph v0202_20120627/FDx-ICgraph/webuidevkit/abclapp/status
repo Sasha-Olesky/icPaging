@@ -1,0 +1,42 @@
+<html><!--&L(0,"*",21);-->
+<!--xL(0,"*",15); -->
+<head>
+<!-- <meta http-equiv=refresh content="2; url=status"> -->
+<script type="text/javascript" src="util.js"></script>
+</head>
+<body onload="translate_hw_type('hwtype'); translate_ipam_type('ipamtype')">
+<font face="arial, helvetica, geneva" size=-1>
+<p><b>System status:</b><br>
+Ticks: &LState(1,"%lu",39); ms<br>
+Uptime: &LState(1,"%lu",40); s<br>
+<p><b>Device information:</b><br>
+Hardware type: <span id="hwtype">&LState(1,"%u",28);</span> (ID &LState(1,"%u",28);)<br>
+IPAM type: <span id="ipamtype">&LState(1,"%u",35);</span> (ID &LState(1,"%u",35);)<br>
+IP address: &LState(1,"%s",13);<br>
+MAC address: &LState(1,"%s",12);<br>
+<br>
+FW version: &LSetup(5,"%02x");.&LSetup(6,"%02x");  (&LSetup(11,"%02x");/&LSetup(12,"%02x");/20&LSetup(10,"%02x");)<br>
+WEB version: &LSetup(9,"%02x","ABCLAPPVERSION",1);.&LSetup(9,"%02x","ABCLAPPVERSION",0);<br>
+Bootloader version: &LSetup(7,"%02x");.&LSetup(8,"%02x");<br>
+Setup version: &LSetup(1,"%02x",116);.&LSetup(1,"%02x",117);<br>
+Sg version: &LSetup(13,"%02x");.&LSetup(14,"%02x"); (&LSetup(18,"%s");)<br>
+Fs version: &LSetup(15,"%02x");.&LSetup(16,"%02x"); (&LSetup(21,"%02x");/&LSetup(22,"%02x");/20&LSetup(20,"%02x");)<br>
+<p><b>BCL application:</b><br>
+Name: &LSetup(4,"%s",180);<br>
+Version: &LBAS(1,"%fs",VER$);<br>
+<p><b>USB device info:</b><br>
+Device detected: &LState(2,"%s",21,0,"no");&LState(2,"%s",21,!0,"yes");<br>
+Vendor ID: 0x&LState(1,"%04x",14);
+Product ID: 0x&LState(1,"%04x",15);<br>
+Device class: 0x&LState(1,"%x",16);
+subclass: 0x&LState(1,"%x",17);<br>
+Interface class: 0x&LState(1,"%x",18);
+subclass: 0x&LState(1,"%x",19);<br>
+Maximum power: &LState(1,"%u",20); mA<br>
+Device capacity: &LState(1,"%lu",22); kB<br>
+<p><b>Filesystem info:</b><br>
+Filesystem attached: &LState(2,"%s",0,0,"no");&LState(2,"%s",0,!0,"yes");<br>
+Filesystem type: &LState(2,"%s",1,0,"unknown");&LState(2,"%s",1,1,"FAT12");&LState(2,"%s",1,2,"FAT16");&LState(2,"%s",1,4,"VFAT");&LState(2,"%s",1,8,"FAT32");<br>
+Serial number: &LState(1,"%08lx",2);<br>
+</body>
+</html>

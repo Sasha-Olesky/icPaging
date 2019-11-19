@@ -1,0 +1,61 @@
+0005
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+Vers  Date     Who  What
+00.01 10.09.08 PK - initial audio-decoder-only version based on the demo
+      11.09.08 PK - correct endian handling
+                  - network handling routine moved completely to RAM
+      12.09.08 PK - sampling frequency autodetection
+                  - IP process removed completely
+		  - eight network receive buffers
+		  - codec drift calculation
+      23.10.08 PK - initial version of the command extracting
+                  - T&R
+		  - T&S
+		  - IOMR registers implemented
+      24.10.08 PK - register loading/writing
+                  - channel configuration from IOMR
+      26.10.08 PK - implemented DNSR
+      27.10.08 PK - sampling rate detection rewritten
+                  - stream presence test
+		  - volatile registers protected by lock in read/write register
+		  - GPIO support
+00.02 29.10.08 PK - command handling rewritten to assembler, response time <150us
+      30.10.08 PK - fixed bug in CPR1 decoding
+      31.10.08 PK - fixed "the device is out of order" message on ESControl 2.54
+                  - dynamic clock speed adjustment rewritten to a better algorithm
+      03.11.08 PK - one channel support on PYKO IN
+      04.11.08 PK - PID/MFID for PYKO IN/OUT
+                  - audio control registers implemented
+      12.11.08 PK - UART CR implemented
+                  - audio peak levels
+      13.11.08 PK - command FIFO increased to 128 entries
+      14.11.08 PK - UART RX and TX implemented
+      15.11.08 PK - fixed UART status readout
+      18.11.08 PK - first attempt for GPIO link
+      19.11.08 PK - GPIO link debugged
+                  - new defaults
+      27.11.08 PK - fixed audio peak level bug (input peak levels were displayed rather than output peaks)
+      28.11.08 PK - peak level bugfix: the value was always 255
+00.03 02.12.08 PK - fixed bug #036.03: WriteRead returns the old value instead of the new one
+                  - recover IOMR registers after startup
+		  - fixed bug #036.02: Channel selection is not properly recovered from the EEPROM after startup
+      03.12.08 PK - GPO stored in the EEPROM on save
+                  - initial version of the serial gateway
+      11.12.08 PK - fixed audio dropouts during EEPROM read/write
+      08.01.09 PK - dropped frames counter
+                  - audio buffering 2 to 4 ms
+      09.01.09 PK - default boot target ES
+                  - reset button switches the boot target to 8K
+                  - display messages for reset/switch to 8K
+      12.01.09 PK - EEPROM register storage moved from offset 1680 to 1670
+      21.01.09 PK - ignore ethernet drivers in extension modules
+00.04 03.02.09 PK - fixed error #036.11: Output peak levels on MAS based devices are 0 if there is no output signal
+      10.02.09 PK - SCS bit set in the SLIDR register - must be set if GPIO tunnel is supported
+                  - bugfix #036.16: commands sent by a non Primary Master are not answered
+		  - fixed bug #036.12: wrong handling of DRE and REE in XTCR (reply-on-event working improperly)
+      17.03.09 PK - using global HW.ee_hw_type rather than reading it locally
+      06.08.09 PK - prepared for VSC
+00.05 30.12.09 PK - #036.16: Use second ethernet on Annuncicom 155
+                  - removed MAC increment on second eth port
+*/
+

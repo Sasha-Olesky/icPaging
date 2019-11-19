@@ -1,0 +1,63 @@
+#!/bin/bash
+# usage: cpcrlf <source> <destination>
+# If called with -r, copies "recursively", but only files and one level
+# deep (no recursion or subdirectories)
+# Overwriting the target is supported in nonrecursive mode of operation.
+# Changes the line endings to CRLF. If the endings are already CRLF they
+# remain.  Part of the input file is allowed to have CRLF endings one way and
+# another part LF.
+#
+# utils/crlf must exist or crlf must exist in the same directory where this
+# script is.
+
+IS_MAC=`uname | tr '[A-Z]' '[a-z]'| grep -o darwin`       # on MAC OS it is "darwin"
+IS_CYGWIN=`uname | tr '[A-Z]' '[a-z]'| grep -o cygwin`       # on MAC OS it is "darwin"
+IS_LINUX=`uname | tr '[A-Z]' '[a-z]'| grep -o linux`       # on MAC OS it is "darwin"
+
+function translate {
+cat $1 | $crlf_path
+}
+
+
+if [ "${IS_LINUX}" != "" ]; then
+crlf_path=./crlf-static-linux-x86
+fi
+
+if [ "${IS_MAC}" != "" ]; then
+crlf_path=./crlf-mac-x86	
+fi
+
+if [ "${IS_CYGWIN}" != "" ]; then
+crlf_path=./crlf.exe	
+fi
+
+
+if [ ! -x "$crlf_path" ]
+then
+	crlf_path=`dirname "$0"`/${crlf_path}
+fi 
+
+if [ "$1" = '-r' -a "$#" -ge "3" ]
+then
+
+	if ! echo abcd | grep -o bc 2>/dev/null >/dev/null
+	then
+        	echo "Error: You have obsolete grep which doesn't support -o switch."
+        	echo "Install GNU grep at least 2.5."
+        	exit 1
+	fi
+
+	mkdir -p $3
+	find $2 -maxdepth 1 -type f -exec "$0" "{}" "$3" ";"
+else
+	if [ -d "$2" ]
+	then
+		filename=`basename "$1"`
+		dest="$2/$filename"
+	else
+		dest="$2"
+	fi
+	if file $1 | grep "text">/dev/null ; then translate $1> "$dest"
+	else cp $1 "$dest"
+	fi
+fi

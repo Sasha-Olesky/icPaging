@@ -1,0 +1,47 @@
+Serial Rescue Procedure on Apple Mac OS X
+=========================================
+
+For the "Serial Rescue" on an Apple computer running Mac OS X you will need:
+- a standard USB to RS-232 serial port converter with an appropriate
+  Mac OS X driver installed
+- the application "Terminal" (installed with Mac OS X)
+- a null modem cable
+
+As the Mac OS X does not use standard names (ttyS0 to ttyS3) we need to first
+discover the device name of the installed serial converter.
+
+1.	Open the application "Terminal" (in the Finder double click the icon
+	Terminal.app" located in the subfolder "Utilities" in the folder
+	"Applications") and type in ls /dev/tty.*  and hit the Enter key:
+
+	The list will show all available serial interfaces.
+	Note the one stating USB, Serial or the product name of your USB converter
+	If you are not sure which one it is disconnect the converter and repeat the
+	above step to spot the difference.
+
+2.	Make sure you are in the "linux_mac" folder within the Update Kit
+	"update_rescue" folder. Use the command "pwd" to show the current directory
+	and the "cd" command to navigate. For example from the outer folder of the
+	kit: cd update_rescue/linux_mac
+
+3.  Unplug power supply.
+
+4.  Connect the null modem cable between your USB to RS-232 serial port
+	converter and the device's serial port.
+
+5.	In the terminal, type the following:
+	./seriald.sh /dev/tty.usbserial
+	where "usbserial" is replaced with the name discovered in step 1. 
+	Hit the Enter key.
+
+6.	A message 'Waiting for the device' will be shown on the bottom of the screen.
+
+7.	Plug in the power supply now. You will see the following:
+	Several parts are sent in a sequence. 
+	The progress is shown in kilo bytes (KiB) sent. 
+	Once all is sent the device will reboot automatically.
+
+8.	Wait until a message 'SUCCESSFUL' appears on the second last line.
+
+9.	Close the Terminal application.
+	Your device is set to factory defaults and should now work.

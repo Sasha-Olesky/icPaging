@@ -1,0 +1,160 @@
+9926
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+04.34 xx.xx.02 JR - initial version for barix
+05.00 28.10.03 RS - added tftp, web update.html, update with compound files
+05.01 09.12.03 RS - if the download filename is reboot then reboot the device
+05.02 17.12.03 RS - eeprom dump with leading zeros
+                  - added boot target (start firmware with specific target)
+                  - output eeprom dump with ascii on the right side
+                  - check password for setup
+05.03 07.01.04 RS - fix web upload (don't overwrite bootloader, fix check error
+                    wrong target and wrong checksum)
+      22.01.04 RS - added command erase_ee to erase eeprom without mac
+      23.01.04 RS - added eeprom loading in compound file
+                  - added compound file header to erase flash without bootloader
+99.04 20.04.04 RS - fixed position of len setupex in eeprom
+      05.05.04 RS - added link to advanced update on the update page and
+                    on the advanced update page a link to the update page
+                  - changed version to 99.04 for an automated update if the
+                    bootloader is loaded anywhere in the flash
+                  - corrected text 'successful' text
+                  - output bootloader version always with pre-zeros
+      06.05.04 RS - don't show setup version in menu setup
+                  - added link on reboot page to reload main page
+                  - added link to go back to update page on an error
+                  - added error if file not found on web update
+                  - added menu to clear all flash pages (without bootloader)
+                  - skip network also with reset button
+                  - added reset button to reset device during bootloadermenu
+                  - added erase eeprom menu (only for setup range)
+                  - added eeprom editor
+      10.05.04 RS - added wakeup via udp for automatic loading (only if no
+                    MAC is set or in boot menu)
+      01.06.04 RS - startup with no mac without automatic factory testing by
+                    hold the reset button
+99.05 05.08.04 RS - added hw compatibility for dstni-ex
+      10.08.04 RS - added output boottarget
+      11.08.04 RS - added output of the ip address
+      20.08.04 RS - boot to bootloader menu with no mac and no ip on reset
+                    button hold
+      26.08.04 RS - send retries on test firmware download
+                  - don't output frame errors an factory network test if less
+                    then 4 packets missed
+      27.08.04 RS - dont wakeup if bootloader started from application
+      07.09.04 RS - fixed bootloader update for ex (bug in flsh_clr of bhw.lib)
+99.06 20.09.04 RS - if bootloader started from application use applications
+                    ethernet interface (lan MAC 0, powerline MAC 1)
+                  - removed dyn mark support to save code mem
+                  - shorten some texts to save code mem
+                  - fixed link end tag in update.html page
+99.07 21.11.05 KS - stdget: Now accepts: no file, index.html, any file containing
+                    update. Also simplified and moved to startup.c (Get.c not required) 
+                    webfile: Added WEB_vHTTPResponseStat200
+                    webfile: Allow reboot anywhere in file path name
+      29.11.05 KS - _cpu_speed added (use 48Mhz), startquiet corrected to disable both MACs for EX
+      12.12.05 KS - added form with reboot button 
+      13.12.05 KS - added date to serial and version & date to WEB UI  
+99.08 09.03.06 KS - build with bhw 01.08 15.02.06 PK - flsh_pgm bug fixed
+      13.03.06 KS - 021.01 UpdateBootloader flash->RAM->flash  
+      14.03.06 KS - root.m updated for new Ethernet memory allocation 
+                    startup.c set_hw_addr included so that EXTINIT and MLOAD don't get pulled in
+                    DOS problem: renamed universal.bin to universl.bin, universal.spb to unifull.spb
+      20.03.06 KS - EC1FULL.ROM and exfull.spb added for legacy consistancy              
+===== Released boot_v9908_20060320 ======= 
+99.09 23.03.06 KS   021.02 Added check in Webfile::bPrgFlash for Bootloader page (0xff00) size
+                    021.02 Added check in Webfile::bTestHeader to reduce length if Bootloader page (0xff00)
+      24.03.06 KS   021.02 Added flag HaveJustStoredBoot in Webfile::WEB_bStoreCompoundFile to ignore
+                           extra data if last page updated was 0xff00
+99.10 03.11.06 KS   025.03 build with bhw 1.10 (and bsw 1.20) for flash hang fix
+               KK   Makefile.nrec: project build will now bring bootloader uptodate
+99.11 19.06.07 KS   019.05 Update version to reflect build with BHW version 1.12 which corrects bug in Ethernet driver (NIC960) 
+      03.07.07 KS   019.06, 013.17 ARP optimisation etc. fixed by including tcpip v5.12       
+99.12 01.08.07 PK - DSTni-EX rev.C support
+99.13 27.03.09 PK - uses DHCP name from Setup
+99.14 15.10.09 KS - #067.05 bsw:monit.c rebuild with updated bsw.lib  
+99.15 31.12.09 PK - #021.15: use second ethernet port on Ann155
+      14.01.10 PK - Barionet 50 bugfix #064.47: if TCP command port Disconnect Timeout is odd network does not work
+                    DO SERIAL SERIAL AFTER THIS CHANGE TO UPDATE THE BOOTLOADER!
+<==== 12.05.10 KS Freeze V99.15 boot_v9915_20100512 prior to changes ====>                     
+99.16 12.05.10 KS - #68.01 STARTUP: menu changed clear ->erase flash and clear EEPROM removed
+      12.05.10 KS - #68.02 STARTUP: Binary Discovery added boot given product id 255 
+      14.05.10 KS - #68.04 STARTUP: bootloader requested from WEB, disable serial interface except for fatal errors
+                           but allow with SERIAL_ON compile SWITCH for testing 
+      28.05.10 KS - #68.05 webfile:WEB_lStorePostFile replace mbufget with 4K static buffer, set boundary size to 80
+      28.05.10 KS - #68.05 WEB.C/web.h increase input Fifo size to 8k, STARTUP spawn only one WebProcess
+      01.06.10 KS - #21.09 and performance: webfile:WEB_bStoreCompoundFile don't erase flash a second time
+      09.06.10 KS - #68.06 webfile:WEB_lStorePostFile advanced mode: multipage COB files not loaded - 28.05.10 #68.05 err
+                           The data stored in flash must be a divisor of 64K. Buf Size increased to account for this
+      10.06.10 KS - #68.07 webfile:WEB_lStorePostFile advanced mode: don't allow direct update to bootloader
+      10.06.10 KS - #21.09 webfile:WEB_lStorePostFile:WEB_bStoreCompoundFile If Cob file overlap cannot recover
+                           clear all of flash, so just leaves bootloader 
+      11.06.10 KS - #21.09 webfile:bPrgFlash Detect no erased (protected) flash by testing for 0xFFFFFFFF 
+      17.06.10 KS - Move 99.16 changes from bootd to boot and update link and make files    
+<==== 17.06.10 KS Freeze V99.16 and tag as boot_v9916_20100617  ====>  
+      22.06.10 KS - added to Makefile.nrec boot/bootloader.bin, added to distfiles bootloader 
+                    added to Makefile.nrec boot/bootbario.bin, added to distfiles bootbario for EX chip Barionets                   
+      08.07.10 KS - Malefile.nrec updated boot_all to make: blserial.bin UNIFULL.SPB exfull.spb exfull_bario.spb 
+                    and the compound files: bootloader.bin(EX,LX) bootbario.bin(LX) (rescue.bin(LX))
+<==== 08.07.10 KS Freeze V99.16 and tag as boot_v9916_20100708 (to replace boot_v9916_20100617) ====>  
+99.17 15.07.10 PK - removed MAC auto-increment on second ethernet port
+                  - #068.08: detect Ann155 by reading PHY ID registers if the HW type is IPAM100
+      22.07.10 KS - Makefile.nrec added: boot_nd to create a zipped bootloader package
+                  - readme_end added to distfiles for the bootloader package
+99.18 27.07.10 KS - #068.10 HWARE.C: Added locally and modified to start Flash size test at 1MB.
+                    This is to avoid an invalid match at FE00,FD00,FB00,F700 if the bootloader is reloaded to one
+                    of these locations. A different Bootloader (1st 30k doesn't match) did not trigger this match. 
+                    HWARE added to Makefile.nrec and lnk files ec1, ex_bario, ex_oem 
+                    #068.10 webfile.c check upload Bootloader boundaries for 2,4,8MB
+      27.07.10 KS - #068.10 webfile.c corrected boundary check on absolute segment
+                    STARTUP::vWebUpdatePage added display of number of flash pages available              
+                    
+<==== 29.07.10 KS Version 99.18 Frozen and released ===>
+99.18 02.08.10 KS - HWARE.C remove HWSeries, HWSer since defined in Startup. Error in Linker but not used so cosmetic 
+99.19 02.08.10 KS #068.09 Started Changes in bootd to support Kick to Bootloader command
+      17.09.10 KS #068.09 bootd version passed validation tests except for minor error #068.14
+      14.10.10 KS #068.14 bootd startup:stdget More time allowed for reboot reply
+99.19 04.11.10 KS - #068.09 Changes moved from bootd to boot 
+                  - startup: Phy set to 10Mbits half duplex to elliminate 1600 sec wait for link up 
+                  - startup::phy_is_up 3 port test added for ANN 155 (Phy left at autonegotiate)
+                  - startup,discovery: added PRO_KIK - Kick to BL
+                  - startup: added T) command under DEBUG flag to send PRO_KIK command to another device 
+                  - startup: If Phy not set to auto negotiate return it to this state before BL entered
+99.19 04.11.10 KS - #068.09 Makefile.nrec, EC1.LNK discover included in build      
+99.19 04.11.10 KS - #068.14 startup:stdget Change moved to boot - More time allowed for reboot reply
+<==== 04.11.10 KS Version 99.19 Frozen and released (change to 99.20 only when new changes made) ===>
+99.20 19.11.10 PK - #068.15: added discovery and kick to bootloader into Barionet50 and the OEM version of the BL
+99.18 07.12.10 KS - BOOT source REVERTED TO V99.18 as at 02.08.10
+<==== 07.12.10 KS Version 99.18 as at 02.08.10 with other modules at 07.12.10 tagged as boot_v9918_20101207
+99.22 15.12.10 PK - fixed wrong PHY initialization on Barionet 50
+                  - removed PHYaddr 3 from Ann155 processing - only addr 1 and 2 are officially supported
+      03.01.11 KS - #068.16 startup: decision 20110103: Only support Kick to BL for Ann155 so patch out PS 16
+      07.01.11 KS - corrected wrong PHY Barionet 50 fix 
+<==== 07.01.11 KS Version 99.22 bootd frozen and released to Lotus Notes ===>
+99.22 11.01.11 KS - #068.19 startup: re-read whole of EEPROM to Setup before BL body
+                  - setpar::SetParms updated case 9 text
+<==== 12.01.11 KS Version 99.22 bootd frozen and re-released to Lotus Notes ===>
+99.22 24.01.11 KS ec1.lnk, setpar.c/h, STARTUP.C, iproc.c(new), NIC960.ASM(new) copied from bootd
+                  Makefile.nrec updated for discover.c, iproc.c, NIC960.ASM
+99.23 03.10.11 KS 068.03 Added ds6io, ds6hw, Makefile.nrec, EC1.LNK for DS16 reset detection 
+      03.10.11 KS 068.03 STARTUP.C Key combination to enter BL if DS16 HW type
+      04.10.11 KS 068.03 webfile.c to save space patched out unused: WEB_vReplaceBackslash,
+                         WEB_vSetEndOfString, WEB_vString2URL, WEB_vURL2String, WEB_bIsLocal
+      06.10.11 KS 068.22 STARTUP.C::stdget unknown *.htm* file rejected before "reboot" test
+      20.10.11 KS 068.23 STARTUP.C: Added to serial and web outputs: HW type in dec and hex
+      20.10.11 KS 068.24 STARTUP.C: Allow HW type to be configured
+      14.11.11 KS 068.23 STARTUP.C: Added to serial and web UI: output IPAM info register HV and PIO12
+      14.11.11 KS 068.23 STARTUP.C: Removed debug flag and saved some space, serial upload removed
+      15.11.11 KS 068.23 webfile.c: space saved by reducing printf - but affects appl help file 
+      15.11.11 KS 068.23 setpar.c : space saved by reducing printf
+      17.11.11 KS 068.23 webfile.c: minor change to text: Click on update to continue or reset the device 
+      17.11.11 KS 068.23 setpar.c : SetParms option 9 text changed for clarity. 
+      18.11.11 KS boot project with stdf/stdpar.h and inc/hwtypes.h merged from branch ipam101                                
+<==== 18.11.11 KS Version 99.24 boot frozen (in CVS head) and released to Lotus Notes ===>                              
+99.25 31.01.12 KS 068.24 STARTUP.C: Update: Only allow LSB byte in EEPROM (0x70e) to be updated.
+99.26 21.02.12 KS 068.28 IPAM101/102 HWARE.C HWInit step 1: read ee_hw_type and
+                                     (new) ee_ipam_type from EEPROM byte locations 
+      21.02.12 KS 068.29 IPAM101/102 discover:D_prepbuf return ipam type in spare byte in HW section 
+      21.02.12 KS 068.29 IPAM101/102 STARTUP: added ipam type to display
+      22.02.12 KS 068.29 IPAM101/102 STARTUP: removed ipam information displayed for BARIONET
+<==== 23.02.12 KS Version 99.26 boot frozen (in CVS head only after merge from ipam 101 branch) and released to Lotus Notes ===>                                    
+*/

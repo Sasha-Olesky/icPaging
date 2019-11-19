@@ -1,0 +1,33 @@
+Preparation for Linux on x86
+============================
+This is for a PC with 386, 486, Pentium, Athlon 32 and similar processors, with
+Linux (Redhat, SuSE, Debian, Ubuntu, Mandrake, Slackware, Knoppix, Gentoo, LFS,
+GNU/Linux etc.). You don't need to do any preparation because we supply a
+statically linked binary.
+
+Preparation for other POSIX operating systems than Linux on x86
+===============================================================
+This is for Linux/Unix on Intel 64, AMD 64, Apple (MAC OS X), Sun Solaris, SGI
+Irix, commercial UNIX, OpenBSD, FreeBSD, NetBSD. Your system must be POSIX
+compliant, otherwise the compilation may fail.
+
+You need a C compiler and a Make program installed. Remove the file "load" (rm
+load) and type "make". This will rebuild the program "load" again for your
+specific conditions. Then continue with "Linux on x86" (see above).
+
+Starting the program
+====================
+Select the "seriald" command to load the software. This command requires a
+parameter to define the PC serial port used which can be chosen as follows:
+
+Serial port  		Use 
+-----------             -----------
+COM1                    ./serial1.sh (this file contains ./seriald.sh /dev/ttyS0)
+COM2                    ./seriald.sh /dev/ttyS1
+other serial ports      ./seriald.sh /dev/...
+	
+Also included in the folder "update_rescue" is a "legacyd" command file.
+For a "Legacy Product" use the "legacyd" command instead of "seriald".
+A description of the "Legacy Products" is provided in the download
+section at www.barix.com.
+

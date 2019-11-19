@@ -1,0 +1,23 @@
+#!/bin/bash
+# atftp emulation for MAC using the native tftp program
+# usage: atftp -l <local file> -r <remote file> -p <IP address>
+
+while [ $# -gt 0 ] ; do
+	case $1 in 
+		-l)LOCAL_FILE="$2";shift;shift;;
+		-r)REMOTE_FILE="$2";shift;shift;;
+		-p)IP_ADDR="$2";shift;shift;;
+		-h)echo "atftp emulation for MAC using the native tftp program"
+		   echo "(c)2009 Barix AG"
+		   echo "Usage: $0 -l <local file> -r <remote file> -p <IP address>";exit 0;;
+		*)echo "Unknown option $1";exit 1;;
+	esac
+done
+
+if [ "$IP_ADDR" = "" ] ; then echo "Error: IP address not specified." ; exit 1 ; fi
+if [ "$LOCAL_FILE" = "" ] ; then echo "Error: Local file not specified." ; exit 1 ; fi
+if [ "$REMOTE_FILE" = "" ] ; then echo "Error: Remote file not specified." ; exit 1 ; fi
+
+#echo -n "TFTP ${IP_ADDR}:  ${LOCAL_FILE} -> ${REMOTE_FILE} ..."
+echo -e "connect ${IP_ADDR}\nbin\nverbose\nput ${LOCAL_FILE} ${REMOTE_FILE}" | tftp
+#echo "done"

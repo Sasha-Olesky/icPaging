@@ -1,0 +1,11 @@
+0104
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+Vers  Date     Who  What
+01.00 05.10.02 RS - initial revision
+01.01 07.03.03 RS - new voice of a woman
+                  - added some more texts
+01.02 11.02.04 RS - changed sampling frequency to 44.1khz for s/pdif
+01.03 08.02.05 RS - silence in files cutted away
+                  - added a-f
+01.04 25.06.07 KS - Removed female voice mp3 files and replaced with Donicip  (Dragan voice)                 
+*/

@@ -1,0 +1,137 @@
+<html><!--&L(0,"*",21);-->
+<body bgcolor=#CCCCCC>
+<b><font size=2 face="Arial, Helvetica, sans-serif">Help</b>
+<p>
+This help gives you a quick insight into the configuration parameters. For a detailed help please refer to the manual.<br><br>
+<br>
+<b>APPLICATION</b><br><br>
+Select the desired BCL application you want to run.<br><br><br>
+<b>NETWORK SETTINGS</b><br><br>
+<b>Use SonicIP</b><br>
+If set to <em>"yes"</em>, the device will announce its IP address over the audio output.<br>
+Default: <em>"yes"</em><br><br>
+<b>IP Address</b><br>
+Enter the 4 values of the desired device IP address e.g.:<br>
+<em>"0.0.0.0"</em> for automatic discovery (DHCP/Bootp, IPzator, AutoIP)<br>
+<em>"192.168.0.12"</em> for an internal LAN <br>
+Default: <em>"0.0.0.0"</em><br>
+<br>
+<b>Netmask</b><br>
+Enter the 4 values of the desired Static IP e.g.:<br>
+<em>"0.0.0.0"</em> for a default Netmask depending on the used IP Address.<br>
+<em>"255.255.255.0"</em> for a C class network<br>
+Default: <em>"255.255.255.0"</em><br>
+<br>
+<b>Gateway IP Address</b><br>
+Enter the 4 values of the desired Gateway IP address e.g.:<br>
+<em>"0.0.0.0"</em> for no Gateway<br>
+<em>"192.168.0.1"</em> for a Gateway in a LAN<br>
+<b>Note</b>: The Gateway has to be set only when connecting to other devices over the WAN (through a router).<br>
+Default: <em>"0.0.0.0"</em><br>
+<br>
+<b>Primary DNS</b><br>
+In this field you can give the Exstreamer the desired primary and alternativ DNS IP address to be able to connect to URLs (e.g. www.radio.com).<br>
+Example: <em>"195.186.1.111"</em><br>
+Default: <em>"0.0.0.0"</em><br>
+<br>
+<b>Alternative DNS</b><br>
+In this field you can give the Exstreamer the desired alternativ DNS IP address in case the primary DNS is not reachable.<br>
+Example: <em>"195.186.4.111"</em><br>
+Default: <em>"0.0.0.0"</em><br>
+<br>
+<b>Syslog Address</b><br>
+Destination address for syslog messages sent by the BCL program via the SYSLOG command. Set this to your syslog logging machine, if your syslog messages are recorded centrally.<br>
+If set to <em>0.0.0.0</em>, syslog messages are broadcast.<br>
+Default: <em>"0.0.0.0"</em><br>
+<br>
+<b>DHCP Host Name</b><br>
+Name of the device sent in DHCP request. If left empty, a name based on the device's MAC address is generated automatically. Enter up to 15 Characters.<br>
+<br>
+<b>Web server port</b><br>
+Defines the port where the webserver of the Barix Exstreamer can be reached. If set to "0" the default HTTP port (80) is used.<br><br><br>
+
+<!--
+&LState(2,"%s",28,25,"-->");
+&LState(2,"%s",28,17,"-->");
+<b>Default Ethernet Port</b><br>
+On devices with dual-ethernet connection this parameter selects the default port to
+be used. In most cases selecting <em>ETH1</em> is suitable, however some devices (e.g.
+the PS16) provide Power-over-Ethernet (PoE) functionality on <em>ETH2</em>.<br>
+If you change this parameter do not forget to connect the ethernet cable to the
+proper port on the rear of the device.<br>
+<b>NOTE</b>: on devices with a single ethernet port select always <em>ETH1</em>.
+Selecting <em>ETH2</em> makes the device unaccessible!<br>
+Default: <em>"ETH1"</em><br><br>
+<!-- -->
+
+<b>System Name</b><br>
+SNMP MIB entry for system name(system.sysName.0)<br>
+<b>System Location</b><br>
+SNMP MIB entry for system location(system.sysLocation.0)<br>
+<b>System Contact</b><br>
+SNMP MIB entry for system contact(system.sysContact.0)<br>
+These parameter can be queried using any SNMP browser but can not be updated.
+<br><br><br>
+
+<b>SERIAL 1</b><br><br>
+These settings adjust the first serial interface properties.<br><br>
+<b>Use Serial For</b><br>
+If you want to attach the VSC panel, select <em>VSC Panel</em>. Select <em>BCL Application</em> otherwise.<br>
+Default: <em>"BCL Application"</em><br><br>
+<b>Baud rate</b><br>
+Select the serial transmission speed (<em>"300"</em> to <em>"230400"</em> Baud).<br>
+Default: <em>"9600"</em><br><br>
+<b>Data bits</b><br>
+Select <em>"7"</em> or <em>"8"</em> data bits.<br>
+Default: <em>"8"</em><br><br>
+<b>Parity</b><br>
+Select <em>"no"</em>, <em>"even"</em> or <em>"odd"</em> parity.<br>
+Default: <em>"no"</em><br><br>
+<b>Stop bits</b><br>
+Select <em>"1"</em> or <em>"2"</em> stop bits.<br>
+Default: <em>"1"</em><br><br>
+<b>Handshake</b><br>
+Select the type of handshake:<br>
+RTS/CTS lines not used: <em>"none"</em><br>
+RS232/RS422: <em>"Software flow control(XON/XOFF)"</em> or <em>"Hardware flow control (RTS/CTS)"</em><br>
+RS485: <em>"RS485 direction control"</em><br>
+Default: <em>"none"</em><br><br><br>
+
+<b>IR SOURCE</b><br><br>
+For reception of IR commands select between:
+<ul>
+	<li>&quot;serial dongle&quot; - external receiver (VSC or dongle from Barix) attached to the first serial port
+	<li>&quot;built-in&quot; - built-in IR receiver available on some devices such as the Exstreamer 110, 120 or 200
+</ul>
+Default: <em>"serial dongle"</em><br><br>
+
+<b>IO SETTINGS</b><br><br>
+<b>Front Panel LEDs</b><br>
+On devices supporting LEDs on the front panel (Exstreamer 1000, Annuncicom 1000) this parameter selects the source controlling the LEDs. On other devices this setting is ignored.<br>
+Possible options are:<br>
+<b>Input State</b> - the LEDs display the status of the digital inputs<br>
+<b>Relay State</b> - the LEDs display the status of the relays<br>
+<b>BCL Control</b> - the LEDs are mapped to the IO map as digital outputs and can be controlled by the BCL application<br>
+Default: <em>"Input State"</em><br><br>
+
+<b>SECURITY SETTINGS</b><br><br>
+<b>Reset Function</b><br>
+Enable or disable the &quot;Reset&quot; function on the Reset button and on the WEB UI. In order to restart the device press the Reset button once. <br>
+Default: <em>"enabled"</em><br><br>
+<b>Factory Defaults</b><br>
+Enable or disable the &quot;Factory Defaults&quot; function on the  Reset button. In order to revert all settings to factory defaults keep the Reset button pressed until the red LED starts blinking (approx. 10 seconds). <br>
+Default: <em>"enabled"</em><br><br>
+<b>Update Function</b><br>
+Enable or disable the WEB Update function of the device. If the Update function is disabled, the only way to update the firmware is to use the serial rescue. <br>
+Default: <em>"enabled"</em><br><br>
+<b>Set Password</b><br>
+This is visible as long as no password is set.<br>
+Enter a password (up to 25 characters) and hit the &quot;Apply&quot; button. After the restart you should close the browser window and open a new browser window. You will be asked to supply user name and password. The user name can be omitted but the password has to be supplied in order to see the web configuration.<br><br>
+<b>Old Password / New Password </b><br>
+These fields are visible as long as a password is set.<br><br>
+To allow free access (clearing the password) enter the old password and leave the field &quot;New Password&quot; empty. Enter the old password in the password field above the &quot;Apply&quot; button as well and then hit the &quot;Apply&quot; button.<br>
+After the restart you will not be asked for user name and password anymore.<br><br>
+To change the password enter the old password and enter the new password in the field &quot;New Password&quot;. Enter the old password in the password field above the &quot;Apply&quot; button as well and then hit the &quot;Apply&quot; button.<br>
+After the restart you will be asked for user name and password. The user name can be omitted but the new password has to be supplied in order to see the web configuration.
+</body>
+</html>

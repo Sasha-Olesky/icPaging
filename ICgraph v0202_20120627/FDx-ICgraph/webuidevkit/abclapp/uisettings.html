@@ -1,0 +1,253 @@
+<html><!--&L(0,"*",21);-->
+<head><script type="text/javascript" src="util.js"></script></head>
+<body OnLoad="serial_check();">
+<font face="Arial, Helvetica, sans-serif" size="2">
+
+<table cellspacing="5" border="0">
+&LSetup(3,"%s",130,D,0,"<!--");
+	<tr>
+	<td>
+		<form action=setup.cgi method=GET style="float: right">
+		<input type=hidden name=L value=uilogout.html><input type=hidden name=D><input type=submit value=" Logout ">
+		</form>
+	</td>
+	</tr>
+&LSetup(3,"%s",130,D,0,"-->");
+<form name="settings" action=setup.cgi method=GET><input type=hidden name=L value=rebooting.html target=_top>
+	<tr>
+		<td colspan="2"><br><b>APPLICATION</b></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Application</b></font></td>
+		<td>
+			<select size=1 name=S180>
+<!--APPLICATIONS-START-->
+				<option value="custom1" &LSetup(3,"%s",180,S,"custom1","selected");>Custom Application 1 (custom1)</option>
+<!--APPLICATIONS-END-->
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="2"><br><b>NETWORK SETTINGS</b></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Use SonicIP</b></font></td>
+		<td><font size=2><input type=radio name=B198b7 value=0 &LSetup(3,"%s",198,b7,0,"checked");> Yes <input type=radio name=B198b7 value=1 &LSetup(3,"%s",198,b7,1,"checked");> No</td>
+	</tr>
+	<tr>
+		<td><font size=2><b>IP Address</b></font></td>
+		<td><font size=2><input name=B0 size=3 maxlength=3 value=&LSetup(1,"%u",0); onChange="IPCheck(this)"> . <input name=B1 size=3 maxlength=3 value=&LSetup(1,"%u",1); onChange="IPCheck(this)"> . <input name=B2 size=3 maxlength=3 value=&LSetup(1,"%u",2); onChange="IPCheck(this)"> . <input name=B3 size=3 maxlength=3 value=&LSetup(1,"%u",3); onChange="IPCheck(this)"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Netmask</b></font></td>
+		<td><font size=2><input name=N8B0 size=3 maxlength=3 value=&LSetup(2,"%u",8,0); onChange="netMaskCheck(this,0)"> . <input name=N8B1 size=3 maxlength=3 value=&LSetup(2,"%u",8,1); onChange="netMaskCheck(this,0)"> . <input name=N8B2 size=3 maxlength=3 value=&LSetup(2,"%u",8,2); onChange="netMaskCheck(this,0)"> . <input name=N8B3 size=3 maxlength=3 value=&LSetup(2,"%u",8,3); onChange="netMaskCheck(this,1)"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Gateway IP Address</b></font></td>
+		<td><font size=2><input name=B4 size=3 maxlength=3 value=&LSetup(1,"%u",4); onChange="IPCheck(this)"> . <input name=B5 size=3 maxlength=3 value=&LSetup(1,"%u",5); onChange="IPCheck(this)"> . <input name=B6 size=3 maxlength=3 value=&LSetup(1,"%u",6); onChange="IPCheck(this)"> . <input name=B7 size=3 maxlength=3 value=&LSetup(1,"%u",7); onChange="IPCheck(this)"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Primary DNS</b></font></td>
+		<td><font size=2><input name=B64 size=3 maxlength=3 value=&LSetup(1,"%u",64); onChange="IPCheck(this)"> . <input name=B65 size=3 maxlength=3 value=&LSetup(1,"%u",65); onChange="IPCheck(this)"> . <input name=B66 size=3 maxlength=3 value=&LSetup(1,"%u",66); onChange="IPCheck(this)"> . <input name=B67 size=3 maxlength=3 value=&LSetup(1,"%u",67); onChange="IPCheck(this)"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Alternative&nbsp;DNS</b></font></td>
+		<td><font size=2><input name=B68 size=3 maxlength=3 value=&LSetup(1,"%u",68); onChange="IPCheck(this)"> . <input name=B69 size=3 maxlength=3 value=&LSetup(1,"%u",69); onChange="IPCheck(this)"> . <input name=B70 size=3 maxlength=3 value=&LSetup(1,"%u",70); onChange="IPCheck(this)"> . <input name=B71 size=3 maxlength=3 value=&LSetup(1,"%u",71); onChange="IPCheck(this)"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Syslog Address</b></font></td>
+		<td><font size=2><input name=B200 size=3 maxlength=3 value=&LSetup(1,"%u",200); onChange="IPCheck(this)"> . <input name=B201 size=3 maxlength=3 value=&LSetup(1,"%u",201); onChange="IPCheck(this)"> . <input name=B202 size=3 maxlength=3 value=&LSetup(1,"%u",202); onChange="IPCheck(this)"> . <input name=B203 size=3 maxlength=3 value=&LSetup(1,"%u",203); onChange="IPCheck(this)"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>DHCP Host Name</b></font></td>
+		<td><input name=S98 size=15 maxlength=15 value="&LSetup(4,"%s",98);"></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Web Server Port</b></font></td>
+		<td><input name=W196 size=5 maxlength=5 value=&LSetup(1,"%u",196,W); onChange=PortCheck(this)></td>
+	</tr>
+	<!--
+&LState(2,"%s",28,25,"-->");
+&LState(2,"%s",28,17,"-->");
+	<tr>
+		<td><font size=2><b>Default Ethernet Port</b></font></td>
+		<td>
+			<select size=1 name=B96>
+				<option value="0" &LSetup(3,"%s",96,B,0,"selected");>ETH1</option>
+				<option value="1" &LSetup(3,"%s",96,B,1,"selected");>ETH2</option>
+			</select>
+		</td>
+	</tr>
+	<!-- -->
+    <tr>
+        <td colspan="2"><br><b>SNMP SETTINGS</b></td>
+    </tr>
+    <tr>
+        <td><font size=2><b>System Name</b></font></td>
+        <td><input name=S205 size=16 maxlength=16 value="&LSetup(4,"%s",205);"></td>
+    </tr>
+    <tr>
+        <td><font size=2><b>System Location</b></font></td>
+        <td><input name=S223 size=16 maxlength=16 value="&LSetup(4,"%s",223);"></td>
+    </tr>
+    <tr>
+        <td><font size=2><b>System Contact</b></font></td>
+        <td><input name=S241 size=16 maxlength=16 value="&LSetup(4,"%s",241);"></td>
+    </tr>
+
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="2"><br><b>SERIAL 1</b></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Use Serial 1 For</b></font></td>
+		<td>
+			<select size=1 name=B199 onChange="serial_check();">
+			<option value=0 &LSetup(3,"%s",199,B,0,"selected");>BCL Application</option>
+			<option value=1 &LSetup(3,"%s",199,B,1,"selected");>VSC Panel</option>
+			<option value=2 &LSetup(3,"%s",199,B,2,"selected");>RTC Module</option>
+		</select>
+		</font></td>
+	</tr>
+	<tr>
+		<td><b><font size=2>Baud rate</td>
+		<td>
+			<select size=1 name=B81>
+				<option value=7 &LSetup(3,"%s",81,B,7,"selected");>300</option>
+				<option value=6 &LSetup(3,"%s",81,B,6,"selected");>600</option>
+				<option value=5 &LSetup(3,"%s",81,B,5,"selected");>1200</option>
+				<option value=4 &LSetup(3,"%s",81,B,4,"selected");>2400</option>
+				<option value=3 &LSetup(3,"%s",81,B,3,"selected");>4800</option>
+				<option value=2 &LSetup(3,"%s",81,B,2,"selected");>9600</option>
+				<option value=1 &LSetup(3,"%s",81,B,1,"selected");>19200</option>
+				<option value=0 &LSetup(3,"%s",81,B,0,"selected");>38400</option>
+				<option value=9 &LSetup(3,"%s",81,B,9,"selected");>57600</option>
+				<option value=11 &LSetup(3,"%s",81,B,11,"selected");>76800</option>
+				<option value=8 &LSetup(3,"%s",81,B,8,"selected");>115200</option>
+				<option value=12 &LSetup(3,"%s",81,B,12,"selected");>230400</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><b><font size=2>Data bits</td>
+		<td>
+			<select size=1 name=B80b2-3>
+				<option value=2 &LSetup(3,"%s",80,b2-3,2,"selected");>7</option>
+				<option value=3 &LSetup(3,"%s",80,b2-3,3,"selected");>8</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><b><font size=2>Parity</td>
+		<td>
+			<select size=1 name=B80b4-5>
+				<option value=0 &LSetup(3,"%s",80,b4-5,0,"selected");>no</option>
+				<option value=3 &LSetup(3,"%s",80,b4-5,3,"selected");>even</option>
+				<option value=1 &LSetup(3,"%s",80,b4-5,1,"selected");>odd</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><b><font size=2>Stop bits</td>
+		<td>
+			<select size=1 name=B80b6-7>
+				<option value=1 &LSetup(3,"%s",80,b6-7,1,"selected");>1</option>
+				<option value=3 &LSetup(3,"%s",80,b6-7,3,"selected");>2</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><b><font size=2>Handshake</td>
+		<td>
+			<select size=1 name=B82>
+				<option value=0 &LSetup(3,"%s",82,B,0,"selected");>none</option>
+				<option value=1 &LSetup(3,"%s",82,B,1,"selected");>Software flow control (XON/XOFF)</option>
+				<option value=2 &LSetup(3,"%s",82,B,2,"selected");>Hardware flow control (RTS/CTS)</option>
+				<option value=8 &LSetup(3,"%s",82,B,8,"selected");>RS485 direction control</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="2"><br><b>IR SOURCE</b></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>IR Receiver</b></font></td>
+		<td>
+			<select size=1 name=B259>
+			<option value=0 &LSetup(3,"%s",259,B,0,"selected");>serial dongle</option>
+			<option value=1 &LSetup(3,"%s",259,B,1,"selected");>built-in</option>
+		</select>
+		</font></td>
+	</tr>
+	<!--
+&LState(2,"%s",28,21,"-->");
+&LState(2,"%s",28,17,"-->");
+	<tr>
+		<td colspan="2"><br><b>IO SETTINGS</b></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Front Panel LEDs</b></font></td>
+		<td>
+			<select size=1 name=B204>
+			<option value=0 &LSetup(3,"%s",204,B,0,"selected");>Input State</option>
+			<option value=3 &LSetup(3,"%s",204,B,3,"selected");>Relay State</option>
+			<option value=4 &LSetup(3,"%s",204,B,4,"selected");>BCL Control</option>
+		</select>
+		</font></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<!-- -->
+
+
+	<tr>
+		<td colspan="2"><br><b>SECURITY SETTINGS</b></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Reset Function</b></font></td>
+		<td><font size=2><input type=radio name=B97b0 value=0 &LSetup(3,"%s",97,b0,0,"checked");> Enabled <input type=radio name=B97b0 value=1 &LSetup(3,"%s",97,b0,1,"checked");> Disabled</font></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Factory Defaults</b></font></td>
+		<td><font size=2><input type=radio name=B97b1 value=0 &LSetup(3,"%s",97,b1,0,"checked");> Enabled <input type=radio name=B97b1 value=1 &LSetup(3,"%s",97,b1,1,"checked");> Disabled</font></td>
+	</tr>
+	<tr>
+		<td><font size=2><b>Update Function</b></font></td>
+		<td><font size=2><input type=radio name=B97b2 value=0 &LSetup(3,"%s",97,b2,0,"checked");> Enabled <input type=radio name=B97b2 value=1 &LSetup(3,"%s",97,b2,1,"checked");> Disabled</font></td>
+	</tr>
+
+	<tr>
+		&LSetup(3,"%s",130,D,0,"
+		<td><b><font size=2>Set Password</font></b></td>
+		<td><input name=P1 size=18 maxlength=25 type=password value=></td>
+		");
+
+		&LSetup(3,"%s",130,D,!0,"
+		<td><b><font size=2>Old Password</font></b></td>
+		<td><input name=P1 size=18 maxlength=25 type=password value=></td>
+	</tr>
+	<tr>
+		<td><b><font size=2>New Password</font></b></td>
+		<td><input name=P1.1 size=18 maxlength=25 type=password value=></td>
+		");
+	</tr>
+	<tr>
+		<td colspan="2">
+			<br>
+			<input type=submit value=" Apply ">
+			<input type=reset value=" Cancel ">
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

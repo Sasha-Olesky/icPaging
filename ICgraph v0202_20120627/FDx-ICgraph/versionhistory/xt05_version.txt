@@ -1,0 +1,15 @@
+0005
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+Vers  Date     Who  What
+00.00 ??.??.02 JR - initial revision
+00.01 10.08.04 RS - added dstni ex support
+00.02 11.11.04 RS - recompiled with bugfix in bhw for select 2nd ethernet
+                    interface (for powerline)
+00.03 17.03.05 PK - extended support for WEP (64&128bit) on Intersil Prism and 
+                    Aironet chipsets
+00.04 02.02.06 PK - NIC960 ethernet driver removed
+                  - module renamed to wls.bin (wireless)
+00.05 12.08.09 KS - MAIN_MAC, XT_MAC.*, Makefile.nrec added for xt_mac.bin                  
+      13.08.09 PK - fixed non-portable inline assembly use, which did not work with -k- option (bug #066.03)
+*/
+

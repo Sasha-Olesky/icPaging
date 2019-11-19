@@ -1,0 +1,161 @@
+<html>&L(0,"*");
+<head><script language=JavaScript src=util.js></script>
+</head>
+<body link=#FFFFFF vlink=#FFFFFF alink=#FFFFFF leftmargin=0 topmargin=0><font face="Arial, Helvetica, sans-serif">
+<br>
+<table width=640 border=0 bgcolor=#8F2635>
+<tr>
+        <td><font size=2 color="#FFFFFF"><b><br>&nbsp;FULL DUPLEX DOOR INTERCOM FOR ICGRAPH<br>&nbsp;</td>
+</tr>
+</table>
+
+<table cellspacing=5>
+        <form action=setup.cgi method=get><input type=hidden name=L value=rebooting.html>
+        <tr>
+                <th><font size=2><br>AUDIO</th><td></td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Input source</td>
+                <td><font size=2>
+                        <input type=radio name=B554 value=129 &LSetup(3,"%s",554,B,129,"checked");> Line
+                        <input type=radio name=B554 value=130 &LSetup(3,"%s",554,B,130,"checked");> Mic         </td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Encoding</td>
+                <td>
+                        <select size=1 name=B600>
+                                <option value=6 &LSetup(3,"%s",600,B,6,"selected");>uLaw / 24 kHz (G.711)</option>
+                                <option value=7 &LSetup(3,"%s",600,B,7,"selected");>uLaw / 8 kHz (G.711)</option>
+                                <option value=8 &LSetup(3,"%s",600,B,8,"selected");>aLaw / 24 kHz (G.711)</option>
+                                <option value=9 &LSetup(3,"%s",600,B,9,"selected");>aLaw / 8 kHz (G.711)</option>
+                                <option value=10 &LSetup(3,"%s",600,B,10,"selected");>PCM MSB / 24 kHz (16bit)</option>
+                                <option value=11 &LSetup(3,"%s",600,B,11,"selected");>PCM MSB / 8 kHz (16bit)</option>
+                                <option value=12 &LSetup(3,"%s",600,B,12,"selected");>PCM LSB / 24 kHz (16bit)</option>
+                                <option value=13 &LSetup(3,"%s",600,B,13,"selected");>PCM LSB / 8 kHz (16bit)</option>
+                        </select>               </td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Volume</td>
+                <td>
+                        <select size=1 name=B524>
+                                <option value=0 &LSetup(3,"%s",524,B,0,"selected");>0</option>
+                                <option value=1 &LSetup(3,"%s",524,B,1,"selected");>5</option>
+                                <option value=2 &LSetup(3,"%s",524,B,2,"selected");>10</option>
+                                <option value=3 &LSetup(3,"%s",524,B,3,"selected");>15</option>
+                                <option value=4 &LSetup(3,"%s",524,B,4,"selected");>20</option>
+                                <option value=5 &LSetup(3,"%s",524,B,5,"selected");>25</option>
+                                <option value=6 &LSetup(3,"%s",524,B,6,"selected");>30</option>
+                                <option value=7 &LSetup(3,"%s",524,B,7,"selected");>35</option>
+                                <option value=8 &LSetup(3,"%s",524,B,8,"selected");>40</option>
+                                <option value=9 &LSetup(3,"%s",524,B,9,"selected");>45</option>
+                                <option value=10 &LSetup(3,"%s",524,B,10,"selected");>50</option>
+                                <option value=11 &LSetup(3,"%s",524,B,11,"selected");>55</option>
+                                <option value=12 &LSetup(3,"%s",524,B,12,"selected");>60</option>
+                                <option value=13 &LSetup(3,"%s",524,B,13,"selected");>65</option>
+                                <option value=14 &LSetup(3,"%s",524,B,14,"selected");>70</option>
+                                <option value=15 &LSetup(3,"%s",524,B,15,"selected");>75</option>
+                                <option value=16 &LSetup(3,"%s",524,B,16,"selected");>80</option>
+                                <option value=17 &LSetup(3,"%s",524,B,17,"selected");>85</option>
+                                <option value=18 &LSetup(3,"%s",524,B,18,"selected");>90</option>
+                                <option value=19 &LSetup(3,"%s",524,B,19,"selected");>95</option>
+                                <option value=20 &LSetup(3,"%s",524,B,20,"selected");>100</option>
+                        </select><font size=2> %                </td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Microphone gain</td>
+                <td>
+                        <select size=1 name=B559>
+                                <option value=0 &LSetup(3,"%s",559,B,0,"selected");>21</option>
+                                <option value=1 &LSetup(3,"%s",559,B,1,"selected");>22.5</option>
+                                <option value=2 &LSetup(3,"%s",559,B,2,"selected");>24</option>
+                                <option value=3 &LSetup(3,"%s",559,B,3,"selected");>25.5</option>
+                                <option value=4 &LSetup(3,"%s",559,B,4,"selected");>27</option>
+                                <option value=5 &LSetup(3,"%s",559,B,5,"selected");>28.5</option>
+                                <option value=6 &LSetup(3,"%s",559,B,6,"selected");>30</option>
+                                <option value=7 &LSetup(3,"%s",559,B,7,"selected");>31.5</option>
+                                <option value=8 &LSetup(3,"%s",559,B,8,"selected");>33</option>
+                                <option value=9 &LSetup(3,"%s",559,B,9,"selected");>34.5</option>
+                                <option value=10 &LSetup(3,"%s",559,B,10,"selected");>36</option>
+                                <option value=11 &LSetup(3,"%s",559,B,11,"selected");>37.5</option>
+                                <option value=12 &LSetup(3,"%s",559,B,12,"selected");>39</option>
+                                <option value=13 &LSetup(3,"%s",559,B,13,"selected");>40.5</option>
+                                <option value=14 &LSetup(3,"%s",559,B,14,"selected");>42</option>
+                                <option value=15 &LSetup(3,"%s",559,B,15,"selected");>43.5</option>
+                        </select><font size=2> dB
+                </td>
+        </tr>
+        <tr>
+                <td><b><font size=2>A/D amplifier gain</td>
+                <td>
+                        <select size=1 name=B529>
+                                <option value=0 &LSetup(3,"%s",529,B,0,"selected");>-3</option>
+                                <option value=1 &LSetup(3,"%s",529,B,1,"selected");>-1.5</option>
+                                <option value=2 &LSetup(3,"%s",529,B,2,"selected");>0</option>
+                                <option value=3 &LSetup(3,"%s",529,B,3,"selected");>1.5</option>
+                                <option value=4 &LSetup(3,"%s",529,B,4,"selected");>3</option>
+                                <option value=5 &LSetup(3,"%s",529,B,5,"selected");>4.5</option>
+                                <option value=6 &LSetup(3,"%s",529,B,6,"selected");>6</option>
+                                <option value=7 &LSetup(3,"%s",529,B,7,"selected");>7.5</option>
+                                <option value=8 &LSetup(3,"%s",529,B,8,"selected");>9</option>
+                                <option value=9 &LSetup(3,"%s",529,B,9,"selected");>10.5</option>
+                                <option value=10 &LSetup(3,"%s",529,B,10,"selected");>12</option>
+                                <option value=11 &LSetup(3,"%s",529,B,11,"selected");>13.5</option>
+                                <option value=12 &LSetup(3,"%s",529,B,12,"selected");>15</option>
+                                <option value=13 &LSetup(3,"%s",529,B,13,"selected");>16.5</option>
+                                <option value=14 &LSetup(3,"%s",529,B,14,"selected");>18</option>
+                                <option value=15 &LSetup(3,"%s",529,B,15,"selected");>19.5</option>
+                        </select><font size=2> dB
+                </td>
+        </tr>
+        <tr>
+                <th><font size=2><br>STREAMING</th><td></td>
+        </tr>
+        <tr>
+                <td><font size=2><b>Streaming mode</td>
+                <td><select size=1 name=B596>
+          <option value=0 &LSetup(3,"%s",596,B,0,"selected");>send always</option>
+          <option value=3 &LSetup(3,"%s",596,B,3,"selected");>send on level</option>
+          <option value=1 &LSetup(3,"%s",596,B,1,"selected");>send on I0</option>
+          <option value=2 &LSetup(3,"%s",596,B,2,"selected");>respond</option>
+        </select></td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Input Trigger Level</td>
+                <td><input name=W534 size=5 maxlength=5 value=&LSetup(1,"%u",534,W); onChange=PortCheck(this)><font size=2></td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Inactivity Timeout</td>
+                <td><input name=W539 size=5 maxlength=5 value=&LSetup(1,"%u",539,W);><font size=2> msec</td>
+        </tr>
+        <tr>
+                <td><font size=2><b>Connection protocol</td>
+                <td><select size=1 name=B544>
+          <option value=1 &LSetup(3,"%s",544,B,1,"selected");>Raw UDP</option>
+          <option value=6 &LSetup(3,"%s",544,B,6,"selected");>RTP</option>
+        </select></td>
+        </tr>
+
+        <tr>
+                <td><b><font size=2>Destination IP</td>
+                <td><b><font size=2><input name=B560 size=3 maxlength=3 value=&LSetup(1,"%u",560); onChange=IPCheck(this)> . <input name=B561 size=3 maxlength=3 value=&LSetup(1,"%u",561); onChange=IPCheck(this)> . <input name=B562 size=3 maxlength=3 value=&LSetup(1,"%u",562); onChange=IPCheck(this)> . <input name=B563 size=3 maxlength=3 value=&LSetup(1,"%u",563); onChange=IPCheck(this)></td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Destination Port</td>
+                <td><b><font size=2><input name=W569 size=5 maxlength=5 value=&LSetup(1,"%u",569,W);></td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Receive Port</td>
+                <td><input name=W574 size=5 maxlength=5 value=&LSetup(1,"%u",574,W); onChange=PortCheck(this)></td>
+        </tr>
+        <tr>
+                <td><b><font size=2>Own Name</td>
+                <td><input name=S500 size=20 maxlength=20 value="&LSetup(4,"%s",500);"></td>
+        </tr>
+        <tr>
+                <td><br><input type=submit value=" Apply "> <input type=reset value=" Cancel "></td>
+                <td>&nbsp;</td>
+        </tr>
+        </form>
+</table>
+</body>
+</html>

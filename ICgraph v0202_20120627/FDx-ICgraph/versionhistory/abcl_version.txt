@@ -1,0 +1,207 @@
+B106
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+Vers  Date     Who  What
+=== Wrong use of B609 version number so start at B002
+B002  27.10.05 KS - main:vCallBas rewritten 
+B003  17.02.06 JR/KK - filename for uploads fixed, new bcl lib
+B004  01.03.06 JR    - COM controls added
+B005  15.06.06 JR    - new audio interface started. file delete added
+      10.10.06 PK    - 76800 serial baudrate support
+      01.11.06 PK    - ioctl implemented for ios>=100 (direct access)
+                     - reading negative offset from AUD returns members of the audio_status structure
+      09.11.06 PK    - fixed potential memory overwrites in audio read
+      10.11.06 PK    - bootloader removed from the web update
+A006  12.01.07 PK    - cleanup
+      17.01.07 PK    - sonic IP
+                     - rc.cgi command execution
+		     - option to disable reset/update/factory defaults
+		     - LED blinking
+      18.01.07 PK    - song version string
+                     - dynamic marks fixed
+		     - config.bin split into config.bin (for the interpreter) and appconfig.bin (for BCL applications)
+      23.01.07 PK    - UDP default read -1 error fixed
+                     - midcpy/midget/midset optimized in asm
+      26.01.07 PK    - DNS address resolution added
+      02.02.07 PK    - fixed bug in VAL
+      13.02.07 PK    - udp write to an empty address ("") doesn't send anything
+      21.02.07 PK/JR - optimized midget/midset functions
+A007  01.03.07 PK    - midcpy crash while serial and audio bug fixed (kernel)
+      02.03.07 PK    - filesize(COM) returns number of bytes in the input FIFO of the serial
+A008  07.03.07 PK    - memory overwrite bug fixed (wrong setup size)
+A009  13.03.07 PK    - filesize(TCP) returns number of bytes in the receiving FIFO
+                     - line read returns empty lines
+A010  13.04.07 PK    - VAL does not resolve IP address, RESOLVE instead 
+                     - added RANDOM
+		     - added MD5$
+      10.05.07 PK    - fixed incorrect CR removal in line read
+                     - io driver extension support
+      21.05.07 PK    - fixed error in udp/rdr reopen - TCP buffer has been overwritten
+      25.05.07 PK    - INSTR search for an empty string returns 0
+      11.06.07 PK    - RTS/CTS control implemented correctly
+      14.06.07 PK    - multicast support added
+A011  06.08.07 PK    - structure of the rescuekit changed, BCL devkit in separate directory
+                     - added scripts into the rescuekit to generate applications.cob
+      20.08.07 PK    - fixed non-working bcl.sh script for Linux
+A012  03.10.07 PK    - updated section D2 of the readme file
+      09.10.07 PK    - initial serial settings taken from Setup
+      29.10.07 JR    - UDP buffering rewritten
+                     - code optimisation to save space
+		     - TCP open DNS bug fixed: if DNS resolution fails, TCP open fails instead of opening a passive connection
+		     - line read works with CR only as well; LIMITATION: with LF terminated lines empty lines can't be recognised
+		     - LEN() works with large buffers now
+      13.11.07 PK    - removed std_ioctl and std_iostate, using ioctl and iostate from bcl_io ONLY
+<==== 20.12.07 PK Version B0.12 Frozen and released ===>
+A013  07.01.08 PK    - initialisation of IO pins (generic inputs and outputs) removed - collision with BCLIO extension
+      04.02.08 PK    - added display handle -2
+      05.02.08 PK    - bug in ASC fixed, negative numbers were returned for ASCII values >127
+                     - keyboard support on handle -2
+      10.03.08 PK    - bugfix: "horrible noise" after reset when playing uncompressed audio
+      31.03.08 KK    - Added a rename which deletes only 8.3 files and doesn't
+                       change or remove the LFS equivalent.
+      09.04.08 PK    - applctns.bat changed to also compile the applications 
+                     - applications.sh changed to also compile the applications 
+      13.04.08 PK    - bug #029.09 fixed: negative values in WEB UI don't work
+      25.04.08 PK    - feature request #029.10 fixed: add syslog destination address
+      22.05.08 KS    - get.c::stdgetEx Look for start.html only once
+      26.05.08 KS/JP - func.c: CRLF processing corrected                
+      27.05.08 KS/JP - ..\lib\bcl_m.lib updated for CRLF processing
+A014  03.06.08 KS    - snmp added ..\lib\snmpm to link and pib.c, main.c includes init_snmp_strings
+                     - basic.a also updated to call init_snmp_strings
+      03.06.08 PK    - added trap support into basic_a
+<==== 17.06.08 PK Version A0.14 Frozen and released ===>
+A015  09.07.08 PK    - fixed bug #020.05 - concatenation fails with syslog
+      11.07.08 PK    - implemented LINK command (bidirectional AUD-UDP tunnel)
+      22.07.08 PK/AD - fixed bug in CGI handling: CGI handler was never executed if LBAS was called before the program start
+<==== 22.07.08 PK Version B0.15 Frozen and released ===>
+A016  26.08.08 PK    - fixed memory leak in DELETE and RENAME
+      27.08.08 AD/PK - added password handling into BAS.cgi
+      27.08.08 PK    - fixed file upload problems in upload.cgi
+                     - improved error reporting in upload.cgi
+      29.08.08 PK    - fixed incorrect return value handling in rc.cgi
+      05.09.08 PK    - added new status parameters
+                     - added input multiplexer support
+<==== 05.09.08 PK Version A0.16 Frozen and released ===>
+A017  15.09.08 PK    - fixed bug #20.13: improper temp string deallocation in ret_tmp_addr
+      18.09.08 PK    - added a new audio staus parameter "decoder active"
+      26.09.08 KK    - fixed bug #020.14: DELAY does not work in user functions
+<==== 29.09.08 PK Version B0.17 Frozen and released ===>
+A018  30.09.08 PK    - fixed bug #020.15: _TMR_(1) is not updated properly
+      02.10.08 PK    - fixed bug #020.16: TIMER x,y  does not reset _TMR_(x) value
+      14.10.08 PK    - removed deprecated audio modes
+      31.10.08 PK    - tokenizer for Linux
+      06.11.08 PK    - FLASH reorganisation for bigger applications.cob
+                     - fixed improper evaluation of "&LState...,b<number>," dynamic mark
+      05.12.08 JR,PK - fixed bug #20.19: LOCAL strings do not work properly in string operations
+<==== 07.01.09 KS Version A0.18 Used in SBB "live" system so start new number ===>
+A019  09.01.09 PK    - added Ethersound module
+      14.01.09 PK    - fixed bug in read -2 (keyboard): if the destination string was too small the unit rebooted
+                     - fixed bug #020.20: multicast not working at all
+      21.01.09 PK    - removed the Waiting for USB message
+      30.01.09 AD    - fixed bug #037.01: read from FLASH files always returns lastlen -1
+      12.02.09 PK    - rescuekit named after the first application
+      12.03.09 PK    - audio handle: SEEK h,x flushes the encoding buffer
+      16.03.09 KS    - Makefile.nrec AB_DEFAULT_PROJECTS=annunfdx (only)
+      17.03.09 PK    - using global HW.ee_hw_type rather than reading it locally
+	  17.03.09 JP    - RS-485 bug fix, bug 047.02 
+<==== 17.03.09 JP    - B019 Frozen and released ===>
+A020  19.03.09 JP    - fixed bug, 029.17->"Dynamic Mark B80b4-5 does not work properly"
+      20.03.09 PK    - feature request #058.01: added IR functionality on handle -3
+                     - added support for VSC
+      23.03.09 KS    - unresolved external for abclu. S_obj[] added to main (needed for discovery) 
+      26.03.09 KS    - No space for discovery so removed, WEB AUTHENTICATION reinstated             
+      30.03.09 PK    - fixed bug #047.05: TCP connections are not closed on reset
+<==== 31.03.09 JP    - B020 Frozen and released ===>
+A021  03.04.09 PK    - bugfix #048.03: Line read returns incorrect content if the last line of the file is not terminated
+      09.04.09 KS    - bugfix #047.08:main: Preparation for moving Ethernet driver to extension, added //far N960Entry() { return (0); }
+                       To move Ethernet driver to extension which will free up about 950 bytes
+                       1) patch out  N960Entry()
+                       2) Redo make to: move fs.bin from WEB1 to another page (e.g. WEB14?) 
+                       3) Add xto5.bin to WEB1
+                       4) The abcl documentation will need to be updated
+B021  15.04.09 KS    - bugfix #047.06 sonicip::MEDIA_vSonicIP set AUX1_CTL_HDX_OUT for Aiphone (patched out no space in abclw)                
+      16.04.09 PK    - bugfix #029.18: DNS server address is not set at startup resulting in non working SPRINTF "%A",4
+      16.04.09 KS    - bugfix #047.06 sonicip: patch in
+      16.04.09 KS    - bugfix #047.09 command::execute_command C_DEFAULTS(C=94) added, setpar::SetFactoryDefaults added
+      21.04.09 KS    - main: Added binary discovery and moved S_obj from pmib to main
+      21.04.09 JP    - bugfix #029.35: Barix.mib and barix_abcl_trap.mib included in package.
+      21.04.09 PK    - bugfix #047.10: Broken audio when applying new settings
+<==== 21.04.09 JP    - Version B021 Frozen and released ===>
+A022  28.04.09 KS    - #025.12 setpar:_status_helper_fn: added HW type (28)
+      11.06.09 PK    - fixed latent memory overwrite bug in upload.cgi: on lack of MBufs return error 503
+      23.06.09 PK    - #047.13 front panel LED control 
+<==== 29.06.09 JP    - Version B022 Frozen and released ===>
+A023  10.07.09 JP    - fixed IGMP checksum error in bsw lib
+      10.07.09 JP    - select quality of service from eeprom.
+<==== 10.07.09 JP    - Version A023 Frozen and released ===>
+A024  16.07.09 KS    - #047.15 setpar verions offsets corrected to Cxxx in dvSetup
+	  21.07.09 JP    - reason for release is change in BSW library #051.04.
+	                 - #047.12 set alttos of ip structure to use Quality of Service.
+      21.07.09 JP    - Version B024 Frozen and released ===>      
+A025  28.08.09 KS    - #047.18 Correct wrong MAC by building with BSW V01.37
+      01.09.09 PK    - SNMP IO table (integers) expanded from 600 to 1000 entries (bug #047.23)
+      04.09.09 KS    - #047.24 pmib.c nethw.DHName displayed for netHostName object ..unit(3).net(1).netHostName(1) is read
+      16.12.09 PK    - uses FAT32 module by default
+                     - bugfix #047.34: Wrong format of FS version in html status page
+A026  19.01.10 PK    - feature #047.26: factory defaults on PS16
+A027  31.03.10 PK    - using frame based buffering
+A028  01.04.10 PK    - feature #47.41: setup.cgi now accepts also POST
+      30.04.10 PK    - #57.07: using the new rescuekit format
+<==== 03.05.10 PK Version B028 Frozen and released ===>
+<==== 11.05.10 PK Version B029 Frozen and released ===>
+A030  01.06.10 JP    - ABCL version 1.4 merged with trunk.
+	              |_ Run application from flash.
+		      |_ Tokenizer application also modified to adapt new memmory layout.
+		      |_ Tokenizer application provides an options to specify target for application.
+		      |_ All scripts are modified to adapt new tokenizer(V1.4). 
+<==== 02.06.10 JP Version B030 released for Digigram ===>
+<==== 02.06.10 PK Version B030 Frozen and released ===>
+<==== 03.06.10 PK Version B031 Frozen and released ===>
+<==== 03.06.10 PK Version B032 Frozen and released ===>
+A033  10.08.10 JP SNMP system parameter(sysName,sysLocation,sysContact) added in EEPROM. 
+      25.08.10 PK    - added gold unit folder to the rescuekit
+<==== 25.08.10 PK Version B033 Frozen and released ===>
+A034  06.09.10 PK    - #047.46 configurable IR source
+                     - added option for serial RTC
+                     - #047.44: content-length removed because it was wrong and did not work with Google Chrome
+      30.09.10 PK    - #047.49: WEB password levels other than 2 don't work
+<==== 11.10.10 PK Version B034 Frozen and released ===>
+A035  27.10.10 KS Makefile.nrec:abcl/abclw5.rom Multi package make added to create abclw with 5K boot profile
+      16.11.10 JP    -#47.52 new feature.send contact closures in RTP extension header from BCL.
+<==== 08.12.10 PK Version B035 Frozen and released ===>
+A036  15.02.11 PK/JP - #47.45: red/green LED control via ioctl 61000/61001
+<==== 01.03.11 PK Version B036 Frozen and released ===>
+<==== 18.04.11 PK Version B037 Frozen and released ===>
+A038  20.05.11 PK    - rewritten get_ip_addr to save space
+      25.05.11 PK    - fixed bug in get_ip_addr and further optimised
+<==== 02.09.11 PK Version B038 Frozen and released ===>
+A039  09.09.11 PK    - #47.63: cannot send UDP broadcast - bugfix in address resolution
+      21.09.11 KS IPAM101 change: distfiles/..compound*, Makefile.nrec updated to allow 2 pages for sg.bin
+      14.11.11 KS    - #47.66 common2::SetFactoryDefaults. If network not included, DHCP retained.
+                              setpar::VersionInit. In Sanity check at start, retain network params. 
+                              Also included in tagged patched version: abcl_ftpmp3_v078_20111111
+      22.11.11 KS    - #47.66 common2::SetFactoryDefaults. Corrected erroneas clearing of params 
+                              between DNS and DHCP (serial).     
+<==== 22.11.11 KS Version B039 Frozen and released ===>
+A040  01.12.11 KS Makefile.nrec readme changed exfull.rom (no longer exists) to UNIFULL.SPB                         
+      05.12.11 KS Makefile.nrec readme bad UNIFULL.SPB cut and paste fixed                         
+A100  11.10.11 KS IPAM101 change: abcl updated from head and version set to next major number     
+A101  13.02.12 PK    - codec type, features and supported modes exported as dynamic marks 43-45 (see the Tech Doc for more details)
+<---- 20.02.12 PK IPAM 101 branch merged into head, new version A1.02 ---->
+A103  28.02.12 KS    - #47.70 IPAM101 change: common2::_status_helper_fn: IPAM TYPE method added (offset 35)
+      13.03.12 PK    - #47.70 IPAM type on the status page, automatically generated with script
+<==== 19.03.12 PK Version B103 Frozen and released ===>
+<==== 23.03.12 PK Version B104 Frozen and released ===>
+A105  29.03.12 PK    - #47.71: changes to support Annuncicom 50 OEM licensing mechanism:
+                       - new dynamic mark &LState(46) to display encoding enable/disable status
+                       - new WEB method licence.cgi to process the licence key 
+      30.03.12 PK    - optimizations to save space for #47.71:
+                       - removed unused functions putscn, putstr, ungetch, FlushIn, FlushOut, OutBuf, OutBufSiz, LocIoDis from stdio.asm
+      03.04.12 PK    - position of custom1.cob moved from WEB6 to WEB7, bcl.sh and bcl.bat modified accordingly
+      12.04.12 PK    - Annuncicom 50 OEM: EEPROM key storage simplified
+                     - custom1.cob moved back to WEB6, bcl.sh and bcl.bat modified accordingly
+<==== 13.04.12 PK Version B105 Frozen and released ===>
+A106  29.05.12 AD    - bugfix #047.74: 'D' (DWORD) setup parameter broken in setpar.c, was overlapped from 'D' (logout).
+      30.05.12 PK    - #47.62: user asked for password 3x
+                     - WEB password processing rewritten and simplified
+<==== 01.06.12 PK Version B106 Frozen and released ===>
+*/

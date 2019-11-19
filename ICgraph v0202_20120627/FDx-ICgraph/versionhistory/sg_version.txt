@@ -1,0 +1,562 @@
+A919
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+00.00 ??.??.03 JR - initial version
+00.01 09.01.04 RS - added aes support
+      23.01.04 RS - added i2c support for read eeprom
+      30.01.04 RS - added support for transmit ir
+00.02 24.02.04 RS - fix for ir Raw send
+      27.02.04 RS - added function to ckeck IR transmitting
+                  - added nec repetition sending
+                  - change ir raw output to 4byte hex per value
+02.01 29.04.04 RS - only changed version to 02.01
+02.02 04.05.04 RS - added get mp3 header fkt
+      05.05.04 RS - added fkt for get current codec mp3 header info
+                  - added fkt to get codec mask
+      18.05.04 RS - added fkt to init i2c channels
+                  - removed unnecessary set output calls in i2c
+                  - added rtc DS1307 support
+      04.06.04 RS - added fkt to get mpeg frame counter
+02.03 11.08.04 RS - added hw compatibility for dstni-ex
+      12.08.04 RS - fixed codec handling, locked access
+      09.09.04 RS - added encoder functionality and workaround
+02.04 16.09.04 RS - restart codec on select in on change input from/to s/pdif
+      21.09.04 RS - fixed 5us delay in i2c driver
+                  - fixed bug in ir send (memory overwrite -> use _fmemset
+                    instead of memset)
+      28.09.04 RS - send sony ir tg 3x every 45ms
+      20.10.04 RS - changed volume scale (100% = +3db instead +12db)
+                  - added volume offset gain
+      09.11.04 RS - removed sonance support (don't influence dout for
+                    annuncicom ic)
+02.05 10.12.04 RS - added fkt for send i2c file
+                  - use send i2c file for init codec
+                  - added codec software download for ulaw/alow/uncompressed
+                    streaming for 35x9 a2/b4 and 3587
+                  - added fkt for codec init, select input with selectable
+                    streamtype
+      28.12.04 RS - added line in mix with stream
+      07.01.05 RS - support for ulaw/alaw/uncompressed encoding/decoding
+      25.01.05 RS - disable codec a/d for now noise via line in/mic in during
+                    change of input source or en/decode
+      26.01.05 RS - added fine pitch function for full range of codec register
+      27.01.05 RS - pitch also available for encoder
+02.06 11.07.05 KS - remove AES until needed.
+      12.07.05 KS - update Makefile and song.bat   
+02.07 18.08.05 PK - siospi moved to the song module
+                  - interrupt routine optimalizations
+02.08 14.10.05 PK - WMA support for VLSI
+                  - added aux call
+		  - correct codec autodetection
+		  - VLSI codec: implemented balance, treble, bass and output mode
+                  - locking in the song module
+02.09 31.10.05 PK - WMA streaming (broadcast) fixed with VLSI rewind patch v0.7
+02.10 11.01.06 PK - added detection of the VS1023 chip
+                  - added I2S support for VS1023
+02.11 08.02.06 PK - added support for 57kHz IR transmit (first byte is: 0=baseband, 1=38kHz, 2=57kHz(60kHz) )
+                  - fixed IR output for EX chip
+		  - fixed baseband transmit on IR
+02.12 10.02.06 PK - CODEC_GETBITRATE call added
+02.13 22.03.06 PK - IR output fix for second serial channel on EX hardware
+      05.04.06 PK - enabled CLKO output for MP3
+02.14 23.04.06 PK - Micronas download code from 12/10/05
+                  - 10us interrupt for encoding
+03.00 19.05.06 PK - full-duplex support
+03.01 31.05.06 PK - MAX5479 I2C potentiometer supported
+      02.06.06 PK - fixed bug: mask wasn't used in encoding
+                  - fixed bug: stop encoding doesn't work after init in half-duplex mode
+      15.06.06 PK - 5us interrupt for encoding
+03.02 20.06.06 PK - STA323 and CS4806 support for Exstreamer200
+                  - STA323 volume, loudnes and balance control
+                  - MAX5479 volume bug fixed
+03.03 23.06.06 PK - timer set back to 10us
+                  - interrupt routine sends always ffff (silence) on buffer underrun
+      26.07.06 KK - Added support for DES with 7-byte keys.
+04.00 28.07.06 PK - new file-like audio interface
+      12.08.06 PK - STA323 treble and bass control
+04.01 13.08.06 PK - audio layer with file-style interface and RTP - bugs fixed and initial version created
+      30.08.06 PK - fixed possible deadlock bug if close is called before delayed playback starts
+      12.09.06 PK - missing STA323 on EX200 is NOT considered as an error, just the functions are disabled
+      13.09.06 PK - software u-Law/A-Law for VLSI
+      28.09.06 PK - initial version of ASF parser
+                  - Micronas download code packed
+04.02 14.11.06 PK - ST7036 display driver
+      15.11.06 PK - ST7036: backlight setting
+04.03 17.11.06 PK - build date information (CODEC_GET_BUILD_DATE call)
+                  - fixed VLSI bug, DREQ not checked when sending commands
+04.04 07.12.06 PK - asf parser accepts ASF2 and multiple streams
+                  - asf parser properly handles multiple songs (new header and data)
+		  - new VLSI rewind patch which properly handles infinite stream
+04.05 18.01.07 PK - audio_init returns song date in the audio_init structure
+                  - output mixer settings in audio_set_param structure
+		  - added AUDIO_FLAG_REBUFFER to the open call, stops playback and rebuffers on buffer underrun
+		  - MMS/HTTP and MMS/TCP parser and audio decoding mode - still alpha code
+		  - stream number selection in MMS/ASF
+04.06 27.02.07 PK - G711/RTP support - first version
+                  - Barix dynamic payload types for PCM/8, PCM/24, PCM/32, ALaw/24, uLaw/24, ALaw/32, uLaw/32 added
+      02.03.07 PK - flush buffer bug fixed
+
+04.07 05.03.07 PK - INTERFACE CHANGE! (audio_init structure)
+                  - RTP header extension support
+      07.03.07 PK - RTP didn't play - fixed
+      08.03.07 PK - fixed non working MP3 RTP decoding (crashed)
+04.08 21.03.07 PK - "decoding" interrupt routine optimized and moved into RAM
+04.09 29.03.07 PK - RTP extension flag corrected
+                  - VLSI driver changed, low level command handshake rewritten, register access simplified
+		  - faster command execution
+		  - smaller delays at initialization
+      03.04.07 PK - RTP extension data sending error corrected, works now
+      13.04.07 PK - set output mixer call added to the old interface
+      23.04.07 PK - bitrate call implemented on the micronas codec
+      07.05.07 PK - Micronas I2C file upload timing error corrected
+04.10 22.05.07 PK - RTP rewritten to use timestamps instead of sequence numbers
+                  - better RTP balancing algorithm used
+		  - RTP resync to a new sequence if buffer underruns
+04.11 05.06.07 PK - new interface: G711 and PCM support for VLSI
+04.12 08.06.07 PK - more relaxed I2C timing
+                  - longer synchronization pattern for MAS to avoid bit desynchronization
+		  - SPI speed setting depending on the encoding/mode used
+		  - corrected wrong default SPI speed on LX 4MHz->1MHz
+		  - EX CPU bug workaround to correct wrong SPI speed generation
+		  - default SPI speed 1MHz for decoding and 4MHz for full-duplex modes
+		  - SPI clock idles high on EX, clock idle low (which was used before) causes 
+		    MAS bit desynchronization and incorrect playback of MPEG 2.5 files 
+                  - get_bitrate call returns bitrate for PCM/G711 modes on VLSI
+      25.06.07 PK - RTP full-duplex modes supported on the exstreamer
+                  - RTP buffering starts at 3/4 of the requested level
+      26.06.07 PK - removed error where audio_bytesfull returned wrong information in RTP mode
+04.13 01.08.07 PK - DSTni-EX rev.C supported
+      13.08.07 PK - SIO_SET_SPEED call added to the old interface
+04.14 20.08.07 PK - added PCM stereo 44.1/48kHz decoding capability for the Micronas codec
+                  - PCM stereo decoding data format changed to the big-endian by default instead of LE
+                  - added AUDIO_FLAG_PCM_LE_DATA flag to switch endianity for all PCM modes
+
+04.15 29.08.07 PK - INTERFACE CHANGE! (audio_init structure, audio_init, audio_get_status, audio_get_params)
+                  - added size parameter to audio_init, audio_get_status, audio_get_params
+                  - uncompressed stereo PCM encoding capability ("es44", "es48") added to the micronas codec and to audio_open,
+                    but the codec firmware is too slow for that at the moment
+		  - audio_init now returns direct pointers to codec fifos
+      30.08.07 PK - audio_write returns EBADMSG on invalid payload type (instead of the original EINVAL)
+      31.08.07 PK - fixed bug in reading ASF stream table
+04.16 25.09.07 PK - VS1033 and VS1053 support added
+                  - STA323 and CS4806 detection independent of the codec type
+		  - vlsi: fixed "analog powerdown" when setting maximum volume in dB
+		  - average bitrate calculated from 1024 values instead of 256
+		  - fixed bug in 44.1/48kHz RTP decoding (lost frames calculation)
+		  - added shoutcast support
+		  - SPI speed selection by driver (more efficient SPI transfer)
+      28.09.07 PK - added codec crash detection and recovery into the new interface; in case of a codec crash, audio is closed, the 
+                    codec reinitialized and a flag for the application is set 
+      03.10.07 PK - CS4806 renamed to CS8406, which is the correct name
+                  - EX200 detection and initialisation (STA323W, CS8406) rewritten
+		  - EX1000 support added
+		  - hardware detection moved into separate object
+		  - CS8406 driver rewritten to generic form (write/read register)
+
+05.00 10.10.07 PK - device specific functions moved into a separate hardware driver (EX200, EX1000 etc.)
+                  - space optimisations in VLSI driver
+		  - basic EX1000 support
+      12.10.07 PK - found and fixed a bug in volume control, "set volume to 0dB" after "set volume to 0%" was ignored
+                  - volume control rewritten, one linear to logarithmic conversion function, one function to handle balance,
+		    low level drivers (codecs and onboard chips) now work with dB volume only
+                  - input selection on EX1000
+      16.10.07 PK - input selection bug fixed on EX1000
+                  - non-working input selection during MP3 encoding fixed
+      17.10.07 PK - incorrect initialisation of EX1000 shift register fixed
+                  - correct I2S Micronas output for EX1000
+      18.10.07 PK - volume calibration on EX200 amplifier output
+                  - extra 1ms delay after hard reset during VLSI initialisation 
+		    to make sure DREQ stabilizes - VS1023 detection was not reliable
+		  - fixed non-working balance control on Micronas
+      19.10.07 PK - preenable and postenable functions added to hardware driver level
+      24.10.07 PK - initial version of the ANN1000 driver 
+
+05.01 06.11.07 PK - INTERFACE CHANGE! (audio_params structure, audio_set_params)
+                  - size checking for audio_set_params call
+05.02 14.11.07 PK - ST7036 display driver moved into bcl_io extension
+      05.12.07 PK - VS1053: disabled PS and SBR in AAC+
+                  - VS1053: upsampling of <24kHz streams disabled to avoid clicks in the audio
+		  - VS1053: SPI speed set to 7MHz and clock multiplier to 4.5x + 0.0x
+      06.12.07 PK - unused get_wav_status removed removed
+                  - unused get_spdif_chan_status removed
+      07.12.07 PK - unused set_fine_pitch removed
+                  - unused CODEC_SETFINEPITCH removed from the legacy interface
+      12.12.07 PK - external SPDIF control on LX based boards moved into the generic driver
+      17.12.07 PK - unused CODEC_STREAMTYPE and set_stream_type removed
+                  - unused CODEC_ENCODE_STREAMTYPE removed
+		  - unused CODEC_INIT_STREAMTYPE removed
+      08.01.08 PK - siospifd optimised, removed unused parts of the code
+      14.01.08 PK - VLSI: fixed wrong timing of SDI 
+                  - VLSI: fixed improper initialisation of XDCS during the init stage
+05.03 25.01.08 PK - hardware type added to audio_init structure
+                  - codec and hardware detection moved to the init function
+                  - initial support of Annuncicom 200
+      29.01.08 PK - added support for second microphone and AUX1 output
+                  - Annuncicom 200 AIPhone support: speaker and microphone
+
+
+06.00 31.01.08 PK - complete rewrite of the Micronas driver
+                  - uses fast PIO program download procedure rather than I2C to load MAS firmware 
+		  - format of the Micronas firmware changed to save space
+		  - internal codec-driver interface simplified, audio format descriptor changed from string to binary 
+		  - obsolete functions and calls removed
+		  - siospifd merged with siospi
+		  - new MAS3587 firmware with simplified interface, supporting 8-48kHz, any combination of stereo/mono/fdx
+		  - implemented block transfer on PIO interface to MAS firmware to increase throughput
+                  - merged the RAM area for all three timer interrupt routines to save memory
+      01.02.08 PK - Annuncicom 100 amplifier control support
+      08.02.08 PK - MAS driver bugfix: DA converter was by default off
+                  - MAS: ADDA is not switched off between disable and enable
+		  - MAS: buffer flush at disable to avoid end-of-song cuttoff
+      11.02.08 PK - Digigram decoder driver added
+      13.02.08 PK - old format translation bug: alaw instead of ulaw - fixed
+      14.02.08 PK - RTP algorithm improved to keep constant delay
+      15.02.08 PK - codec inactivity counter ignored when recording from SPDIF
+      19.02.08 PK - MAS driver bugfix: device reset after reopening audio for encoding
+      20.02.08 PK - added forgotten 22.05kHz sampling rate
+      22.02.08 PK - LE/BE switching support on encoded data as well
+      28.02.08 PK - VLSI driver: peak detection added
+                  - bug #026.59 fixed: distorted WMA when playing DTMF tones on VS1003B
+      04.03.08 PK - added call CODEC_INIT_HWTYPE
+      07.03.08 PK - fixed extra zero byte bug in uncompressed audio with Micronas driver
+                  - fixed SPDIF synchronisation bug in Micronas firmware
+      10.03.08 PK - changed timing in Micronas PIO protocol, 575ns per byte transaction, removed extra 100ns delay
+      11.03.08 PK - MAS encoder DMA bug workarounded
+      12.03.08 PK - bug #019.18 fixed: Reset when switching from SPDIF coaxial to line input
+      13.03.08 PK - fixed non-working 48kHz PCM on MAS35x9
+      14.03.08 PK - I2C driver optimization and clean up
+                  - added volume fader
+      18.03.08 PK - bug #019.16 fixed: Distorted uLaw and ALaw on VLSI codecs
+      19.03.08 PK - extended I2C delay in MAS driver
+                  - proper locking in MAS driver 
+		  - extended delay in MAS DMA bug workaround for safety
+06.01 25.03.08 PK - EX200, EX1000 and ANN1000: hardware detection based only on hardware type - WILL NOT WORK IF TYPE NOT SPECIFIED!
+      28.03.08 PK - 5% linear volume changed from -51dB to -57dB for better performance in fading
+                  - codec buffer flush removed from audio_close and added into VLSI driver
+                  - performance nice reduced from 3ms to 1ms
+		  - Micronas: bitrate implemented in uncompressed modes as well
+		  - I2C: increased transfer speed
+		  - RTP bugfix: extra 12-14ms delay every 110ms
+                  - maximum RTP frame size reduced from 1400 to 1300 bytes for better performance in ABCL
+		  - VLSI: fixed the cut-off ends of song
+      04.04.08 PK - fixed wrong bitrate calculation in uncompressed modes on MAS3587 and MAS35x9
+      09.04.08 PK - perf_nice() called in sio_spi_send_recv_vlsi to avoid unnecessary CPU locking by slow data transfer
+                  - STA323 driver functions made reentrant 
+		  - fixed potential race and data inconsistency (frame read twice) in rtp_uncompressed_read_frame()
+      13.04.08 PK - global lock removed
+      15.04.08 PK - audio_write caches sample fragments if non-aligned data are written in PCM raw mode
+      16.04.08 PK - bugfix: race condition in set_log_volume, volume not consistent between external circuits and codec
+                  - bug #019.25 fixed: race condition in volume fader: set volume does not stop the fader
+      17.04.08 PK - frame lost counter in RTP decoding
+      18.04.08 PK - Digigram hardware type changed from the temporary type to a real value
+      21.04.08 PK - temporary hardware type for Digigram put back in
+      24.04.08 PK - fixed deadlock when rebuffering, bug #026.92
+      29.04.08 PK - VLSI: I2S output enabled for any codec >VS1003
+      08.05.08 PK - cs84x6 driver: added locking
+      09.05.08 PK - input selection for EX1000
+      15.05.08 PK - added VLSI Ogg Vorbis patch
+                  - small optimisation in VLSI patch loading
+      16.05.08 PK - VS1053: workaround to make I2S work also after soft reset
+                  - MAS3587: new firmware from Micronas - fixed non-working 32kHz SPDIF input
+      20.05.08 PK - Ex1000 driver: fixed improper I2S settings on the internal bus
+06.02 27.05.08 PK/JR - irlib: automatic polarity detection
+      29.05.08 PK - Ex1000: driver modified to support the latest hardware changes
+                  - Ex1000: input selection works properly now
+      18.06.08 PK - added support for unsigned 8-bit PCM
+06.03 20.06.08 PK - bug #019.27 fixed: interrupt race in sio_spi_enable
+      27.06.08 PK - VLSI: perf nice is not called during command send out - this was causing dropouts in uncompressed playback
+06.04 08.07.08 PK - Micronas: fixed broken (clicking) 32kHz SPDIF input
+                  - Ex1000: using external ADC at 32kHz
+      11.07.08 PK - RTP sending directly from song
+      28.08.08 PK - MAS driver: fixed crash with MP3 encoder and SPDIF input
+      29.08.08 PK - Digigram PYKO IN driver
+                  - PCM1807 drivers independent on the hardware
+		  - input multiplexer support added
+      02.09.08 PK - simplified handling of deprecated audio modes in audio_open
+      05.09.08 PK - added zero_count, dupl_frames and drop_frames into audio_status structure
+06.05 08.09.08 PK - added peak levels in dBFS
+      11.09.08 PK - codec type and properties exported through the audio_init structure
+      12.09.08 PK - added another codec data handler routine for PCM on MAS - inserts silence on buffer underrun
+      18.09.08 PK - changed semantics of zero_count (audio_status) - monitored also during buffering or if playback is not active
+      22.09.08 PK - added CODEC_SET_AIPHONE to the old interface
+      23.09.08 PK - zero_count does not raise if data cached in the RTP buffering stage
+                  - ad and mic gain boundary check in audio.c
+      24.09.08 PK - current_buffer_level reflects also the RTP cache
+                  - internal codec buffer correction in buffering
+      26.09.08 PK - added support for the PS16 Paging Console
+                  - audio peak levels scanned also if audio not open
+      29.09.08 PK - fixed improper "delay" boundary check in RTP mode
+                  - RTP: dropped frame counter increased also during replication
+      01.10.08 PK - PYKO OUT: fixed volume control error
+06.06 14.10.08 PK - VS1053 bitrate calculation bug workaround
+                  - removed deprecated audio modes
+		  - workaround for VS1053 bitrate counter overflow
+      16.10.08 PK - new interface to audio_open
+                  - RTP now accepts delay and drift parameters in uncompressed modes
+      31.10.08 PK - added decoding speed adjustment - instable on Micronas!
+      04.11.08 PK - fixed overrun error in RTP buffering calculation
+      06.11.08 PK - improved RTP start threshold calculation
+                  - VS1053: increased initial buffering
+      11.11.08 PK - audio.c::set_params incorrect setting of % volume removed            
+      14.11.08 PK - VS1053: adjusted internal codec buffer compensation for uncompressed mono
+                  - MAS: adjusted internal codec buffer compensation for MP3
+      02.12.08 PK - MAS: fixed bug #018.09: extra 128 garbage bytes when MP3 encoding starts
+      03.12.08 PK - VLSI: enabled PS and SBR in AAC+
+      16.12.08 PK - fixed bug #025.14: I2C bus is protected with lock against collisions
+      17.12.08 PK - MAS: fixed bug #018.12: I2C race condition at uncompressed audio start
+      19.12.08 PK - IR: added blocking IR_RECEIVE function
+      16.01.09 PK - VS1053: compressed internal codec buffer size changed back to 2048
+                  - VS1053: changed playback cancel procedure - now should be more reliable
+		  - VLSI: discard data in the codec internal buffer if the audio buffer is empty, to prevent
+		    audio artefacts on audio_close()
+      20.01.09 PK - fixed bug #018.13: rare codec crash on VS1053 when reopening audio
+      02.02.09 PK - Ann200: fixed inverted Aiphone microphone control pin
+06.07 06.02.09 PK - fixed bug #018.19: Micronas: Aliasing at 32kHz PCM analog
+                  - using a new download code from Micronas with different clock settings
+      09.02.09 PK - AIphone interface by default off (aux1_out_ctl and mic2_ctl)
+      10.02.09 PK - bug #018.19 reopen - the new download code is not reliable, though it has better audio quality
+      13.02.09 PK - the "playing" status flag is reset during RTP playback if "rebuffer at underrun" flag is set and 
+                    buffer underrun occurs
+      16.02.09 PK - bugfix #018.18: fixed wrong initial RTP buffering on VLSI codecs in uncompressed modes: 
+                  - bugfix #018.20: 44.1kHz MP3 stream generated by VLC has glitches every second
+		    the MP3 RTP decoder resynchronises to encoder's timestamp if a timestamp rounding error is detected
+      17.02.09 PK - linking new IR library with polarity autodetection
+                  - IR input on VSC works now
+06.08 18.02.09 PK - Micronas: don't flush the codec buffer if audio_close with immediate=1 is called
+                    this reduces the close latency
+      03.03.09 PK - removed nonsensious CODEC_INPUT_SERIALBIN: treated as line in
+06.09 07.03.09 PK - added audio_rtp_dec_params() which autodetects a RTP PT and returns the proper audio_open parameters
+      11.03.09 PK - fixed bug #053.02: RTP encoder: sequence number and timestamp should be initialised with a random number
+                  - fixed bug #053.01: RTP encoder: audio glitches at 44.1kHz mono
+06.10 12.03.09 PK - Aiphone interface simplified: mic2_ctl not used, aux1_ctl has 3 states: 0=off, 1=encoding, 2=decoding
+                  - fixed bug #053.03: RTP decoder: frequent dropouts at sequence start at 48kHz PCM stereo
+
+07.00 18.03.09 PK - IR moved from song to bcl_io
+      21.04.09 PK - added CODEC_FLAG_BROKEN_ASF_PADDING into VLSI driver
+                  - CODEC_GETINFO returns the codec flags in bits 16..31
+		  - ASF parser: send padding CODEC_FLAG_BROKEN_ASF_PADDING is not set - to work on VS1053
+		  - VLSI driver: do not use soft reset on VS1053 when switching streams (in ASF parser using old song interface) - it can crash the codec
+		    using the proper cancel procedure now
+07.01 28.04.09 PK - bugfix #047.07: device crash if PCM decoding and then encoding selected
+07.02 17.06.09 PK - MAS driver: completely disabled clock fine tuning - causing codec crashes, noise, buzz, device reset 
+		    and "codec bug resetting" message
+07.03 29.06.09 PK - codec watchdog unified for all modes: triggers after 100ms of no response
+      02.07.09 PK - Micronas: enable I2S output in uncompressed modes (AES output on Ex1000)
+      20.07.09 PK - I2C RTC support removed to save space - not used anywhere
+                  - removed save_pio and restore_pio from detection; detection is based only on the hardware type
+      21.07.09 PK - removed licensing (lic.c)
+                  - removed I2C EEPROM READ
+      28.07.09 PK - fixed bug in avg_output_buf_level calculation; the value was not calculated every 50ms but about every millisecond
+                  - variables in audio process allocated on the stack rather than in the static memory - saves data space
+      04.08.09 PK - ASF parser: added support for MP3 encapsulated in ASF
+                  - implemented parameter -1 in CODEC_ENABLE_STREAM: stop and flush codec's internal buffer
+      05.08.09 PK - RTP: added SSRC lock; decoder ignores packets with a non-matching SSRC
+      13.08.09 PK - fixed non-portable inline assembly use, which did not work with -k- option (bug #066.03)
+      14.08.09 PK - RTP always restarts on buffer underrun; flag AUDIO_FLAG_REBUFFER is ignored in RTP mode
+      05.11.09 KK - Song sometimes mutes during disable stream. Fixed. 53.06
+07.04 28.12.09 PK - #53.08: added support for Ann155
+07.05 26.02.10 PK - #053.12: added audio direction control for Annuncicom VME
+---------------------------------
+A7.10 15.03.10 PK - interim solution to solve the Micronas "codec bug" in analog modes
+                  - Micronas firmware v38 with cleaned up audio modes
+                  - uses lower DSP clock, stable analog modes without "codec bug"
+                  - PCM 44.1kHz stereo full-duplex not working any more because of lack of MIPS
+                  - Micronas DSP buffer reduced from 1280B to 320B => reduced latency
+                  - bug #18.19 fixed: aliasing at 32kHz analog
+                  - uncompressed switching SPDIF-> analog does not work
+                  - CPU can be held up to 100ms when switching Micronas uncompressed modes - waiting for MAS demand signal before sending the sync pattern
+                  - 32kHz SPDIF encoding losing data
+A8.00 24.03.10 PK - implemented frame based buffering
+                  - configurable SSRC in the encoder (new parameter in the audio open structure: rtp.ssrc)
+      30.03.10 PK - Exstreamer 1000 always uses internal ADC; MAS SPDIF input to be fixed 
+A801  31.03.10 PK - implemented raw UDP buffering
+      07.04.10 PK - improved initial buffer level calculation for uncompressed modes (RTP)
+                  - RTP delay includes the overall delay of the decoder, including the sample FIFO
+      14.04.10 PK - average buffer level calculation (bytes) change propagation time reduced from about 50s to about 1s
+                  - bugfix #53.16: VLSI codec crash not detected by the watchdog
+      15.04.10 PK - bugfix #53.10: audio_write may hang if "codec bug" appears
+                  - support for compressed VLSI patch format
+      22.04.10 PK - RTP_RESET also resets the frame buffer duration - to avoid misleading avg_duration in non-RTP modes
+      23.04.10 PK - corrected RTP start threshold in uncompressed modes
+                  - RTP latency now internally calculated in signed
+                  - bugfix #53.15: broken MP3 frame can freeze VS1053
+                  - using compressed patches on VS1053: the complete set version 1.20
+                  - bugfix #52.32: dropouts in 48kHz AAC+ at 48kbit/s (DSP clock watchdog and feature drop too relaxed)
+A802  26.04.10 PK - validated VLSI patch 1.20
+                  - removed unused pio_bits_used parameter from the hardware driver structure
+      30.04.10 PK - RTP read and UDP sending from song skip the RTP and MPA headers if AUDIO_FLAG_NO_RTP_HDRS is set
+A803  04.05.10 PK - frame based buffering: low pass filter changed to from 20mHz to 400mHz (2.5s reaction time), to
+                    cope with 400ppm clock drift
+                  - #053.17: dropped packets at startup in uncompressed RTP on VLSI
+      05.05.10 PK - improved initial start calculation in MP3 to avoid dropped/duplicated frames
+      11.05.10 PK - MAS driver: protection against wrong MAS configuration: e.g. rec 8kHz SPDIF, etc.
+A804  14.05.10 PK - #053.18: Codec bug while playing WMA files; increased codec watchdog trigger timeout from 100ms to 500ms
+      21.05.10 PK - VLSI: prepared for AD mixer
+A805  31.05.10 PK - #053.19: RTP decoder hangs if SSRC changes during buffering
+A806  11.06.10 PK - MAS firmware v51: 
+                  - analog 8-48kHz fully working in encoding, decoding, full-duplex
+                  - SPDIF 32, 44.1 and 48kHz fully working in encoding and full-duplex
+                  - decoupled playback and encoding, SPDIF error recovery: SPDIF working also if signal not present
+                  - #018.17: MAS SPDIF input and full-duplex uncompressed not working if the signal is interrupted
+                  - #070.03: MAS channel swap on SPDIF
+                  - #053.21: analog input on Ex1000 configurable: int/ext ADC
+      18.06.10 PK - MAS firmware v54:
+                  - SPDIF FIFO overrun monitoring, channel swap test doubled, SPDIF settle-down time increased from 20ms to 60ms
+      22.06.10 PK - #053.13: input selector for Annuncicom 155, 200 and VME
+      26.06.10 PK - MAS firmware v58:
+                  - loopback in recording
+      30.06.10 PK - reverting to MAS v54 due to too high recording speed in v58
+                  - enabled MAS clock fine tuning 
+                  - MAS speed permanently reduced by 150ppm to compensate high clock difference against VLSI and external ADC
+      07.07.10 PK - MAS FW v59b 
+                  - audio loopback auto-clock tuning also in mono
+                  - fixed auto-clock tuning bug in analog
+                  - MAS driver: permanently enabled uncompressed loopback in encoding only; now works the same way as in MP3 encoder
+      08.07.10 PK - #053.20: RTP: frequent dups/drops if buffer level set too high
+                  - #052.76: Micronas: MPEG bitrate always showing 0
+                  - VLSI: MPEG bitrate calculation simplified to save space
+                  - MAS FW v60: fixed SPDIF recording
+A807  09.07.10 PK - #053.24: full AD mixer implementation on VS1053 (IPAM 300)
+      12.07.10 PK - fixed inefficiency in fb_insert_frame: now called only if mode is MP3
+      16.07.10 PK - #053.25: Codec bug while playing Ogg Vorbis files; increased codec watchdog trigger timeout from 500ms to 2s
+      17.07.10 PK - MAS FW v63: improved PLL algorithm in SPDIF recording loopback
+0810  17.07.10 PK - MAS development branch merged into main trunk
+      19.07.10 PK - added support for Exstreamer 500
+      21.07.10 PK - #053.26: improved VS1053 cancel procedure to better cope with end of file, setting the "resync" count to 0
+      23.07.10 PK - #053.27: audio_close() may deadlock if codec bug appears
+                  - #053.28: disabled clock tuning on MAS - causing whistling noise when using internal ADC
+0811  27.07.10 PK - bugfix #053.29: Micronas: volume +9dB louder
+      29.07.10 PK - timeout after the last byte in MAS PIO protocol reduced from 4us to 2us to save CPU time (bug #061.10)
+0812  05.08.10 PK - #053.30: reduced SPI speed on VS1003/1023/1033 from 7MHz to 6MHz due to potential marginalities
+0813  24.08.10 PK - VS1053 patch set version 1.4 fixing occassional Ogg Vorbis freeze
+0814  29.09.10 PK - 053.32: amplifier mute control on IP Speaker
+      08.10.10 PK - added 500ms delay into init before amplifier is unmuted in IP Speaker to avoid plops
+08.15 19.10.10 PK - clear audio buffer in audio_close() to avoid misleading information on the UI (buffer full even if not playing)
+      27.10.10 PK - #053.35: full duplex not working on old interface
+                  - changed locking in audio_close() - which should actually prevent race condition between audio_close() and audio_open()
+      01.11.10 PK - #053.34: lockup in audio_close() if codec crashes
+08.16 08.11.10 PK - changes for #53.36: linear volume in 1% steps
+                  - volume clipping to min/max separated from set_linear_volume to an extra function
+                  - changed interface to set_linear_volume: now operates with 1% steps instead of 5%
+                  - changed interface to convert_linear_volume: now operates with 1% steps instead of 5%
+                  - linear interpolation of 5% steps in convert_linear volume to implement 1% volume
+                  - audio fader function automatically distinguishes between 1% and 5% volume based on the current volume type
+      15.11.10 PK - #53.37: add interface for sending RTP extension data from LINK
+08.17 18.11.10 PK - VLSI patch set 1.5, 
+                  - VLSI: reverting AAC+ settings (0x1e03) to default 0
+                  - #053.31: AAC+ stream sounds choppy
+      08.12.10 PK - #052.59: removed dual soft reset on VS1003-1033 to prevent long switching of songs
+08.18 22.02.11 PK - #053.41: bass and treble frequency setting
+08.19 24.05.11 PK - #053.42: new parameter to audio status: dec_fmt
+08.20 06.06.11 PK - #053.43: Exstreamer 205 support
+08.21 14.06.11 PK - #053.44: output gain ignored in fading
+08.22 20.07.11 PK - #053.45: AD-mixer now runs at 48kHz rather than at 192kHz - solved aliasing problem on I2S/SPDIF output
+08.23 24.10.11 PK - #100.15: wrong MP3 RTP buffer calculation on VS1053
+08.24 29.11.11 PK - #053.49: MPEG layer I and II decoding enabled
+08.25 11.01.12 PK - #053.50: Annuncicom 50 driver
+<----- 20.02.12 PK merged IPAM 101 branch, new version 09.13 ----->
+09.00 04.01.11 PK - VLSI encoding on IPAM 101 - initial version
+                  - support for MAS3509 v1.01 (mask A ???) removed for space reasons
+      15.02.11 PK - added IPAM101 detection
+                  - added mic/line control on IPAM 101
+      03.03.11 PK - fixed deadlock in audio process: delayed audio start during audio_close()
+      19.04.11 PK - mic/line control in encoding/fdx
+      21.04.11 PK - Annuncicom 100/200/155 driver modified to support IPAM101 (amplifier control PIO remapped)
+      03.05.11 PK - integrated UART transfer routine (VS1063 compatible)
+      05.05.11 PK - 48kHz duplex via UART for VS1053
+      06.05.11 PK - line/mic switch PIO remapped to PIO5 for IPAM 101 
+      13.05.11 PK - UART stop DMA correctly adjusting inp and no longer losing data
+                  - removed parameter media_buf from sio_spi_ini
+                  - removed variable "fifoadr" from the xfer routines, they are now always using fifoadri/fifoadro
+                  - new bit (1) to sio_enable_stream to control start/stop DMA
+                  - IPAM101 bugfix: RTS output initialized to avoid VS1053 booting in MIDI mode
+      01.06.11 PK - IPAM101 analog input: 1.142x digital multiplier to compensate to IPAM100 input sensitivity
+      07.06.11 PK - configurable A/D gain
+09.01 15.06.11 PK - input and output peak levels on IPAM 101
+09.02 26.07.11 PK - VS1063 detection in VLSI driver
+      27.07.11 PK - VU-meter on VS1063 implemented
+      28.07.11 PK - fixed VS1063 peak level problem after soft reset
+      29.07.11 PK - AAC/WMA/OGG bitrate correction on VS1063
+      02.08.11 PK - encoding/duplex setup for VS1063
+                  - initial support for VS1063 MPEG encoding
+      03.08.11 PK - VLSI: obsolete "aux" function almost completely removed from old interface, only aux(5) is supported
+      05.08.11 PK - temporary VS1063 workarounds: peak levels disabled, fixed 128kbps rate in MP3 encoding
+09.03 09.08.11 PK - merged with current state of CVS head. i.e. changes in Song v.8.18-8.22 (see above)
+      10.08.11 PK - ADmix patch enabled together with duplex patch (however still only one can run at the time)
+      11.08.11 PK - disabled peak levels completely, since they're causing data loss on the UART when encoding
+09.04 18.08.11 PK - fixed: mic selection not working in select_in
+09.05 25.08.11 PK - VLSI: fixed bug in wrong handling of codec start/stop during SCI access 
+                  - VLSI: peak level readouts reenabled
+                  - VLSI: fixed bug encoding for ever if enabled once
+                  - sio_enable_stream: fixed wrong handling of "ignore DMA" parameter
+      26.08.11 PK - VS1063: implemented MPEG encoder quality settings backwards compatible with MAS
+                  - VLSI: WRAMADDR locking to avoid conflict during two memory read/writes or MPEG encoder start
+                  - VS1063: mono output control
+                  - VS1063: bridge output applies mono matrix
+      08.09.11 PK - IPAM101/102: microphone gain control
+                  - VS1053: fixed L/R input peak level swap
+                  - IPAM101/102: fixed wrong polarity of input switch
+09.06 29.09.11 PK - bugfix: input peak levels sometimes show -224dB
+                  - AD mixer deactivated when encoding starts
+                  - AD mixer support on VS1063
+                  - VS1063 fix: expression error in AD mixer initialization causing mismatch in parametric.playMode 
+      04.10.11 PK - IPAM101 support in Annuncicom 1000 driver
+                  - VS1063: workaround for artefacts in encoding: strange distortion at 32kHz encoding, 8kHz playing 3x faster in duplex
+      19.10.11 PK - old interface: added sio_set_encode(0) into CODEC_INIT_HWTYPE for backward compatibility with applications 
+                    that do not call CODEC_SET_ENCODE (e.g. Exstreamer std. SW) -> decoding selected by default
+09.07 25.10.11 PK - IPAM101 bugfix: double signal strength in encoding at 8, 12, 16 and 32kHz sample rates
+      26.10.11 PK - IPAM102: vs1063a patch set version 1.02 introduced; solves some encoding issues
+      27.10.11 PK - IPAM101 bugfix: random channel swap in encoding (especially at 32kHz)
+      01.11.11 PK - IPAM101: input monitoring in encoding-only mode
+                  - VS1063 patch set v1.10
+                  - VS1053 patch set v1.90
+                  - VS1053 mono downmix output feature in decoding only
+      02.11.11 PK - reverted VS1053 patch set 1.90 and mono downmix feature - not working
+09.08 07.11.11 PK - VS1063: fixed sampling bug at 32 and 16kHz (distorted audio), caused by interference of 1063 patch set with SCI_AUDATA workaround
+                  - VS1063 patch set v1.11 fixing no audio output in duplex
+      08.11.11 PK - IPAM101: fixed couple of bugs in DMA start/stop: uninitialized register, possible unexpected DMA interrupt and mess-up of DMA registers
+09.09 21.11.11 PK - VLSI bugfix: race condition in DSP patch upload resulting in DSP firmware corruption and "codec bug"
+      23.11.11 PK - VS1063 patch set v1.20: encoding 44.1kHz now working, random channel swap in duplex improved
+                  - VS1053: implemented mono output mode
+                  - VS1053 patch set v1.95
+      01.12.11 PK - VS1063 clock increased to 5.0x+0.5x to avoid channel swap in duplex
+      05.12.11 PK - VS1063 fixed clock 5.0x and modified UART multiplier for the new clock
+09.10 12.12.11 PK - VS1063: fixed broken encoding producing low bitrate stream of zeroes after stopping and restarting encoder or duplex
+      04.01.12 PK - VS1063 patch set 1.30a for 16/32kHz duplex
+                  - VS1053/1063: flush UART FIFO before encoding/duplex starts - fixes PCM data corruption in encoding/duplex after audio reopen
+                  - audio.c: buffering algorithm calculation simplified
+                  - VS1063: exact DSP buffering information
+                  - frame based buffering algorithm modified to use DSP information -> very low decoding delay now possible on IPAM102
+      09.01.12 PK - frame buffering: fixed error in calculation of G711 on VLSI - end to end delay ~100ms lower than configured
+      11.01.12 PK - RTP frame buffering: fixed error initial calculation on VS1003, VS1023, VS1033 on reopen (forgotten debug)
+      13.01.12 PK - improved IPAM101/102 detection: IPAM 200/300 was wrongly detected as encoding capable and duplex audio was not working
+09.11 17.01.12 PK - IPAM 101/102: Micronas mixer emulation in Song to achieve proper local loopback function
+09.12 19.01.12 PK - removed undocumented PCM 8-bit mode and reused for G.722
+                  - #53.51: implemented G.722 (VS1063)
+      24.01.12 PK - workaround for ocasional codec bug in MP3 encoding on VS1063 after MP3 decoding
+      31.01.12 PK - fixed crash in MP3 encoding/RTP on IPAM 100/Ex500 (divide by zero error, uninitialized variable rtp.timing_factor)
+09.13 07.02.12 PK - low level driver for Annuncicom PS1
+<----- 20.02.12 PK merged IPAM 101 branch, new version 09.13 ----->
+09.14 23.02.12 PK - #53.56: fixed zero_count not working on VS1063/IPAM 102
+09.15 02.03.12 PK - audio_pipe_empty() function moved to codec driver
+                  - common function check_cpu_buffer_underrun in codec.c
+                  - VS1063 empty pipe detection rewritten, using a patch for low latency
+                  - fixed unreliable zero_count on IPAM 102
+09.16 23.03.12 PK - #53.58: linear input peak levels out of 0..7fff range on VS1063
+09.17 29.03.12 PK - #53.59: Annuncicom 50 OEM support
+      02.04.12 PK - licencing calculation re-added in licence.c
+                  - re-enabled EEPROM read function
+09.18 07.05.12 PK - #53.54: RTP decoder synchronisation relaxed from +/-0.6 frame to +/-1.5frame
+      10.05.12 PK - #53.61: allow up to +3.5dB overdrive on VLSI codec if volume set to >0dB
+      14.05.12 PK - removed forgotten debug messages from volume functions in VLSI driver
+A9.19 24.05.12 PK - reviewed cancel procedure in VLSI driver
+      25.05.12 PK - VS1063 patch set 1.32a:
+                  - removed ll.bin patch, replaced with Application hook @ addr 0x60
+		  - #53.63: random RTP dup/drop corrections on VS1063 devices - negative audio FIFO fill value fixed in patch set 1.32a
+      29.05.12 PK - updated version of VS1063 patch set 1.32a
+                  - VS1063: improved buffer underrun detection due to "decoding started" bit from DSP (AICTRL0)
+                  - #53.62: VLSI patch 1.31 breaks Streaming Client shoutcast playback 
+                  - #53.52: 5-band equaliser on VS1063
+      30.05.12 PK - #53.64: first implementation of AEC for VS1063 based devices
+      31.05.12 PK - VS1063 patch set v1.32a-v3: fixing broken mono duplex mode, which was interpreted in the DSP as stereo
+                  - 5-band equaliser and AEC added to codec info on VS1063
+*/

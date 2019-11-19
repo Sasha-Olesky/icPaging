@@ -1,0 +1,194 @@
+0123
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+Vers  Date     Who  What
+00.01 10.05.07 PK - initial revision
+00.02 15.05.07 PK - on/off states swapped
+00.03 16.05.07 PK - hardware detection added (BCL_IO_INIT call)
+                  - analog values: voltage+temp
+		  - PIC control
+00.04 17.05.07 PK - save/restore PIO registers for the case when autodetection fails
+00.05 12.09.07 PK - added support for the new PIC firmware for Ann1000 (9-bit voltage)
+00.06 03.10.07 PK - hardware detection added, driver structure changed, separate driver for each hardware type
+                  - EX1000 driver added, I2C driver from song added
+      12.10.07 PK - structure rewritten to fit the new song driver architecture
+      24.10.07 PK - Ann1000 driver split into several modules to allow usage by song
+                  - PIC control register in Ann1000 driver moved into shared memory (int vector 26h)
+                  - fixed bug in restore PIO where the pins were set to "normal operation" which could cause a crash
+00.07 31.10.07 PK - digital output and relay toggle added
+                  - digital output and relay pulse function added
+		  - generic IO driver for standard Annuncicom, Exstreamer, Instreamer
+      01.11.07 PK - RTS/CTS functions on all hardware
+      02.11.07 PK - corrected the default RTS value for LX hardware
+                  - added full control of the Annuncicom 1000 hardware
+		  - Bosch/Annuncicom 1000 detection
+      05.11.07 PK - fixed null-pointer dereference bug when no driver found
+      06.11.07 PK - voltage and temperature on Ann1000 in 0.01 units
+      07.11.07 PK - generic driver: added support for EX110 relay
+      08.11.07 PK - ann1000: fault relay inverted
+                  - ann1000: fixed reversed numbering of inputs
+      09.11.07 PK - generic driver: removed unnecessary code
+00.08 09.11.07 PK - IPAM driver added
+                  - corrected inverted RTS on second serial
+00.09 14.11.07 PK - display interface added
+                  - display driver for ST7036 (EX110)
+		  - backlight control
+      15.11.07 PK - 7-segment display driver added
+      21.11.07 PK - display scrolling 
+                  - display clear block
+      22.11.07 PK - octal character notation (\123) support added into display driver
+00.10 24.01.08 PK - Barionet V2 driver added
+      25.01.08 PK - hardware type in little-endian
+00.11 03.02.08 PK - DS6 console driver added
+      04.02.08 PK - added support for ANSII escape sequencies to the print function
+00.12 05.02.08 PK - keyboard support
+                  - keyboard driver for DS6 MTSD
+      11.02.08 PK - Digigram decoder driver added
+      12.02.08 PK - Digigram: PIO reassignment
+                  - Digigram driver: input bug fixed
+      05.03.08 PK - fixed bug in 7-segment display detection
+00.13 25.03.08 PK - hardware detection based purely on ee_hw_type - WILL NOT WORK IF TYPE NOT SPECIFIED!
+00.14 17.04.08 PK - stack size of the IO process increased from 200 to 300
+      18.04.08 PK - Digigram hardware type changed from the temporary type to a real value
+      21.04.08 PK - bugfix #018.04: Ann 1000 driver: LEDs should not blink
+      21.04.08 PK - temporary hardware type for Digigram put back in
+      08.05.08 PK - more secure LED control: noise in input shiftreg can not change the control pins
+00.15 09.07.08 PK - added hardware descriptor from IO port 60000 (read using IOSTATE)
+      23.07.08 PK - intial version of Barionet LC driver
+      19.08.08 PK - fixed non-working LF in display print function
+00.16 22.08.08 PK - initial support for PYKO IN/FD
+      27.08.08 PK - PYKO IN/FD driver: MUX control moved to song
+      19.09.08 PK - iostate(60007) returns the number of keys
+                  - Ann1000: inputs 1..8 can be scanned as keyboard events
+                  - Ex1000: inputs 1..4 can be scanned as keyboard events
+      20.09.08 PK - Ann100/200: inputs 1..2 can be scanned as keyboard events
+                  - Pyko: inputs 1..4 can be scanned as keyboard events
+      26.09.08 PK - DS6 driver: added hardware type detection
+                  - LED control via auxilliary control interface
+      27.09.08 PK - fixed IOCTL pulse bug on IO 200
+      29.10.08 PK - increased stack size to 500B
+      13.11.08 PK - assigned hardware type for Barionet 50
+00.17 21.11.08 PK - harris display driver rewritten
+                  - separate driver for 7-segment displays
+		  - initial version of VSC display driver
+00.18 22.11.08 PK - new interface to io_init - all parameters are in one structure
+      29.11.08 PK - initial support for VSC
+00.19 02.01.09 PK - added DILL - display interpreted language library, a programmable display library
+      06.01.09 PK - driver reports to the application if the standard LEDs are used
+      20.01.09 PK - improved VSC communication for better data synchronisation
+00.20 21.01.09 PK - interface simplification: removed display_gotoxy and display_clear calls
+                    use display_print with an appropriate ANSI sequence instead
+                  - removed display_message call- use DILL instead
+		  - removed display_print_flash_file_entry - use DILL instead
+      26.01.09 PK - second display support, so far can be used only with DILL
+00.21 04.02.09 PK - enabled PIO17 on the IPAM carrier board
+      06.02.09 PK - feature request #018.16: enabled access to PIO11, PIO17, PIO29 and PIO30 on IPAM 200/Exstreamer 100
+      12.02.09 PK - PS16: increased the maximum number of extensions to 5, 
+                    but only 2 will work with key events and only 1 can be used with IO map
+		  - Barionet 50: updated driver to the latest schematics
+      13.02.09 PK - Barionet 50: 1-wire temporarily mapped to IO 101
+      27.02.09 PK - PS16: the number of supported keys limited to 100
+
+01.00 18.03.09 PK - IR handler moved from song to bclio
+                  - ignores hw_type from the init call and uses get_hw_type() call instead
+      19.03.09 PK - added IR_READ_HIGH_LEVEL call
+      20.03.09 PK - IR decoder: added various formats into the high level decoding routine
+      06.04.09 PK - Exstreamer 1000: LEDs were inverted (input inactive - LED was on), fixed
+01.01 04.05.09 PK - started 1-wire driver implementation
+      02.06.09 PK - Barionet50: digital input logic changed to positive (negative before)
+      05.06.09 PK - added 1-wire RTC driver
+                  - Barionet 50: temperature sensor addresses mapped onto IO 651-700
+		  - added 1-wire driver for DS18B20 temperature sensor family
+		  - Barionet 50: temperature sensor measurement on registers 601-650
+01.02 08.06.09 PK - exported 1-wire interface
+      09.06.09 PK - 1-wire discovery algorithm rewritten
+                  - added 1-wire RTC interface
+		  - 1-wire support in Ex1000 and IPAM
+		  - built-in TS support on Ex1000
+      10.06.09 PK - 1-wire processing rewritten to asynchronous with request queueing
+                  - implemented calls for RTC read and set
+      12.06.09 PK - created another build target bcl_io_x with extended tables (for Barionet 50)
+01.03 13.06.09 PK - implemented virtual bits 301..400
+      15.06.09 PK - Barionet 50: implemented virtual word registers 701..1000
+                  - Barionet driver excluded from bclio.bin to save space
+		  - Barionet 50: implemented 32-bit counter registers 
+		  - Barionet 50: RTS control on IO 9 rather than IO 200
+      16.06.09 PK - Barionet 50: virtual relays and digital outputs implemented
+      17.06.09 PK - Ex1000: non-working temperature measurement fixed 
+      22.06.09 PK - DILL: get_int and 'I' rewritten to support signed
+                  - bugfix #065.01: output/relay pulse changed: sets immediately in ioctl, the pulse can be 10ms inaccurate
+01.04 22.06.09 PK - feature #018.21: PS16 driver: supports up to 112 keys (2 complete extensions)
+      23.06.09 PK - LED control: show inputs, show outputs, map as digital outputs in the IO map
+                  - Ann1000: simplified driver, full LED control, LEDs mapped to IO 151-158 (if enabled)
+      24.06.09 PK - Ex1000: full LED control, LEDs mapped to IO 151-154 (if enabled)
+      27.06.09 PK - DILL: 'i' integer variables are signed; added variable type 'u' for unsigned integers
+                  - DILL: added % operator
+		  - DILL: nice called after every command
+      08.07.09 PK - PS16 driver: fixed wrong polarity of LEDs in iostate
+      09.07.09 PK - PS16: keyboard scan period increased from 3ms to 10ms
+      16.07.09 PK - Ex110 display driver: wait 4ms after clear screen instead of 2ms
+      28.07.09 PK - added RDI556 serial RTC driver
+                  - Barionet50: 1-wire RTC enabled only if no serial RTC attached
+      30.07.09 PK - added IO_AUX_SET_IO_MASK
+01.05 03.08.09 PK - added IR_FORMAT_CMD into the high-level IR function, which returns directly the command to be executed
+                    this dramatically simplifies the IR process in the application
+      07.08.09 PK - external 1-wire enabled for Barionet 200
+      13.08.09 PK - 1-wire: fixed non-portable inline assembly use, which did not work with -k- option (bug #066.03)
+01.06 27.08.09 PK - implemented virtual 16-bit registers 501..600 on Barionet 50 (feature #064.08)
+      01.09.09 PK - virtual 16-bit registers in bcl_io.bin (ABCL) (bug #047.23)
+      04.09.09 PK - special target for ABCL: bclio_a.bin; virtual 16-bit registers removed from the standard version bclio.bin
+01.07 05.09.09 PK - added IO subscription mechanism in Barionet 50 driver
+                    WARNING: init incompatible with previous versions
+      11.09.09 PK - changed interface to IO subscriptions: multiple subscriptions possible
+      23.09.09 PK - fixed wrong number of relays and digital inputs on Barionet50 (bug #064.18)
+                  - fixed non-existent analog values on Barionet 50 (#064.19)
+01.08 07.10.09 PK - output pulse and toggle slightly modified:
+                  - toggle only by ioctl x,999 (before it was any value >=999)
+		  - toggle, set or reset stops already running pulse timer
+		  - fixed bug in pulse function: total count was wrong if pulse repeated
+		  - added IO_PULSE_TOGGLES compile option for Barionet compatible behaviour of the pulse function (#064.24)
+      15.10.09 PK - 1-wire TS: measurement time increased from 760ms to 1s (as a precaution against bug #064.17)
+		  - 1-wire TS: fixed wrong timing of high-power in a "send, high power" sequence (bugfix #065.02)
+      16.10.09 PK - bugfix #064.17: 1-wire collision with the RS485 port (CTS) resulting in temp sensors always reading 0
+01.09 10.11.09 PK - Ex1000 temperature sensor disabled because it was disturbing 44kHz PCM audio FDX (bugfix #048.09)
+01.10 08.12.09 JP - bugfix #047.19: device resets if DHCP server responds too quickly
+                    caused by nice() within enable/disable chip select in Ex110 display driver (pin shared with the reset button)
+01.11 17.12.09 PK - feature #047.33: added support for reset button as a digital input (IO address 296) 
+01.12 28.12.09 PK - initial version of the Ann155 driver
+      31.12.09 PK - Ann155: fixed wrong order of digital inputs
+                  - LED output mapped as a relay rather than digital output
+      06.01.10 PK - Annuncicom 1000 PIC driver: delay before data reception increased from 3us to 10us (for compatibility with Ann155)
+      12.01.10 PK - bugfix #064.43: 1-wire reports temp value 0 even if bus is shorted
+                  - bugfix #064.51: temperature sensors are not in subscriptions
+      05.02.10 PK - bugfix #064.43: 1-wire reports temp value 140.6 if bus is shorted
+01.13 25.02.10 PK - #065.05: Annuncicom VME driver
+01.14 21.04.10 PK - #065.06: Exstreamer 120 support
+01.15 19.07.10 PK - #065.08: added support for Exstreamer 500
+      20.07.10 PK - Ex1000: LED update and input scanning frequency reduced from 100Hz to 20Hz to reduce system load (bug #61.10)
+01.16 29.07.10 PK - #055.21: Annuncicom 155: negative temperature displayed improperly
+                  - #065.09: added speaker supervision support for Annuncicom 155
+01.17 06.08.10 PK - #065.10: IP Speaker hardware supported
+                  - serial peripheral (VSC, IR-RTC) driver selects the protocol (RS232/RS485) according to the hardware type 
+                  - VSC driver forces the serial port to half duplex and does not receive loopback (local echo) any more
+                  - IP Speaker: using PIO 11 for VSC infra-red (acts as built-in)
+                  - optimisation: serial and 1wire flags in io_driver->io_desc compacted to 1 byte "flags" allowing more flags to be addded
+      27.08.10 PK - #065.11: IR input on IP speaker works with both settings "built-in", "external"
+01.18 10.11.10 PK - #065.12: Barionet 50: 1-wire addresses accessible via IO registers
+                  - #065.13: Add interface to 1-wire bus from the application
+                  - #065.14: wrong number of digital inputs on Ann155 (4 instead of 2)
+                  - #065.07: Add virtual bit registers 205-300 for Barionet 50
+01.19 16.02.11 PK - IPAM101 support in Annuncicom 100/200 driver
+01.19 06.06.11 PK - #065.15: Exstreamer 205 support in infra-red driver
+      07.06.11 PK - IPAM101 support in PS16 driver
+      26.09.11 KS - drv/ds6io.c PDATA_IPAM_100 (corrcted to 0xff7A from 0xff76)
+      29.09.11 PK - IPAM101 support in Exstreamer 500/1000 driver
+      03.10.11 PK - IPAM101 support in Annuncicom 1000 driver
+      07.10.11 PK - IPAM101 and 102 support in IPAM100 carrier board and IPAM100 driver
+01.19 25.11.11 jp - #64.68: barionet-50 deriver. Allow writing to temperature sensors fro BCL. So they can be used to store temperature values from other ( not 1-wire ) sources.
+      28.11.11 jp - #64.74.1-wire sensors returns wrong value in case of negative temperature. This problem was due to type conversion from int to long.
+01.20 11.01.12 PK - #65.17: Annuncicom 50 IO driver
+01.20 07.02.12 PK - low level driver for PS1
+01.21 17.02.12 PK - Ann155 driver fixed to work on IPAM 100 (broken due to a change in common Ann1000/155 driver for IPAM 101)
+01.22 27.02.12 PK - #65.19: add IPAM module type to register 60008
+      19.03.12 PK - #65.20: wrong number of serial ports reported on Annuncicom PS1
+01.23 29.03.12 PK - #65.21: Annuncicom 50 OEM detection
+*/

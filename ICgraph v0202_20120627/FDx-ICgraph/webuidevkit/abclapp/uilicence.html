@@ -1,0 +1,85 @@
+<html><!--&L(0,"*",21);-->
+<head>
+<script type="text/javascript">
+
+// tests if character c belongs to the licence key charset
+// returns: true = belongs; false = does not belong
+function is_valid_char(c)
+{
+	var char_set=['2','3','4','5','6','7','9','A','C','D','E','F','G','H','J','K','M','N','P','Q','R','S','T','U','V','W','X','Y','Z'];
+	for (i=0;i<29;i++)
+		if (c==char_set[i]) return true;
+	return false;
+}
+
+
+// checks licence key format in the field o
+// returns: true = licence format OK, false = wrong format - not a licence key
+function check_licence_key(key)
+{
+	if (key.length!=19) return false;
+
+	key=key.toUpperCase();
+
+	for (j=0;j<key.length;j++)
+	{
+		c=key.charAt(j);
+		if (j==4||j==9||j==14)
+		{
+			if (c!='-') return false;
+		}
+		else {
+			if (!is_valid_char(c)) return false;
+		}
+	}
+	return true;
+}
+
+function LicenceCheck()
+{
+	f=document.forms["licence"];
+	key=f.l;
+	submit=f.submit_button;
+
+	submit.disabled=!check_licence_key(key.value);
+}
+</script>
+</head>
+<body onload="LicenceCheck()">
+<font face="Arial, Helvetica, sans-serif" size="2">
+
+<table cellspacing="5" border="0">
+&LSetup(3,"%s",130,D,0,"<!--");
+	<tr>
+	<td>
+		<form action=setup.cgi method=GET style="float: right">
+		<input type=hidden name=L value=uilogout.html><input type=hidden name=D><input type=submit value=" Logout ">
+		</form>
+	</td>
+	</tr>
+&LSetup(3,"%s",130,D,0,"-->");
+	<!--
+&LState(2,"%s",28,44,"-->");
+<form name="licence" action=licence.cgi method="GET">
+<input name="n" type="hidden" value="lic_rejected.html">
+<input name="p" type="hidden" value="lic_accepted.html">
+	<tr>
+		<td colspan="2"><br><b>ANNUNCICOM 50 OEM ENCODING LICENCE</b></td>
+	<tr>
+		<td><font size=2><b>Status</b></font>
+		<td><font size=2>The Encoding Feature on this device is &LState(2,"%s",46,!0,"enabled");&LState(2,"%s",46,0,"disabled");.</font>
+	<tr>
+		<td><font size=2><b>Licence key</b></font></td>
+		<td><font size=2><input &LState(2,"%s",46,1,"disabled=\"disabled\""); name=l id="licence_input" size=19 maxlength=19 value="" onChange="LicenceCheck()" onkeyup="LicenceCheck()"></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<br>
+			<input type=submit id="submit_button" &LState(2,"%s",46,1,"disabled=\"disabled\""); value=" Submit ">
+		</td>
+	</tr>
+<!-- -->
+</table>
+</form>
+</body>
+</html>
